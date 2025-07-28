@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Bitset.h"
+#include "../Bitset.h"
 
 #include <cstdint>
 #include <vector>

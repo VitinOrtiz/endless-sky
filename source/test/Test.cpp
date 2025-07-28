@@ -21,7 +21,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "../Logger.h"
 #include "../Planet.h"
 #include "../PlayerInfo.h"
-#include "../Ship.h"
+#include "../ship/Ship.h"
 #include "../System.h"
 #include "TestContext.h"
 #include "TestData.h"

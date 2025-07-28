@@ -15,10 +15,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "FormationPositioner.h"
 
-#include "Angle.h"
-#include "Body.h"
+#include "../Angle.h"
+#include "../Body.h"
 #include "FormationPattern.h"
-#include "Point.h"
+#include "../Point.h"
 #include "Ship.h"
 
 #include <algorithm>

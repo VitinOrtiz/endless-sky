@@ -32,7 +32,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Preferences.h"
 #include "Rectangle.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "ShipInfoPanel.h"
 #include "System.h"
 #include "text/Table.h"

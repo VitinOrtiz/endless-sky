@@ -23,9 +23,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "shader/FillShader.h"
 #include "text/Format.h"
 #include "GameData.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "PlayerInfo.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "text/Table.h"
 
 #include <algorithm>

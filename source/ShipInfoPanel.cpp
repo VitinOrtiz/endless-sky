@@ -36,7 +36,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "PlayerInfoPanel.h"
 #include "Rectangle.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "ShipNameDialog.h"
 #include "image/Sprite.h"
 #include "shader/SpriteShader.h"

@@ -30,7 +30,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Preferences.h"
 #include "shader/RingShader.h"
 #include "Set.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "System.h"
 
 #include <set>

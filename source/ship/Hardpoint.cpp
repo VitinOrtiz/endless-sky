@@ -15,16 +15,18 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Hardpoint.h"
 
-#include "audio/Audio.h"
-#include "Body.h"
-#include "Effect.h"
-#include "Flotsam.h"
+#include "../audio/Audio.h"
+#include "../Body.h"
+#include "../Distribution.h"
+#include "../Effect.h"
+#include "../Flotsam.h"
+#include "../pi.h"
+#include "../Projectile.h"
+#include "../Random.h"
+#include "../Visual.h"
+
 #include "Outfit.h"
-#include "pi.h"
-#include "Projectile.h"
-#include "Random.h"
 #include "Ship.h"
-#include "Visual.h"
 
 #include <algorithm>
 #include <cmath>

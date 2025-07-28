@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "CaptureOdds.h"
 
-#include "Government.h"
+#include "../Government.h"
 #include "Outfit.h"
 #include "Ship.h"
 

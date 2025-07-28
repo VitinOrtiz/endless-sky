@@ -18,9 +18,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Angle.h"
 #include "Effect.h"
 #include "GameData.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "Random.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "image/SpriteSet.h"
 #include "Visual.h"
 

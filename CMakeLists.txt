@@ -15,8 +15,8 @@ cmake_dependent_option(ES_CREATE_BUNDLE "Create a Bundle instead of an executabl
 set(CMAKE_CONFIGURATION_TYPES "Debug" "Release" CACHE STRING "" FORCE)
 
 # Use C++20 without any compiler specific extensions.
-set(CMAKE_CXX_STANDARD 20 CACHE STRING "")
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
 # We don't use modules, so avoid using unrecognised compiler-specific commands that cmake produces when they are enabled.
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)

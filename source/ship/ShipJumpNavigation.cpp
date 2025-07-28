@@ -15,9 +15,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "ShipJumpNavigation.h"
 
+#include "../System.h"
+
 #include "Outfit.h"
 #include "Ship.h"
-#include "System.h"
 
 #include <algorithm>
 #include <iterator>

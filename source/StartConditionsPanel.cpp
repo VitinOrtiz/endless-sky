@@ -30,7 +30,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Preferences.h"
 #include "Rectangle.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "ShipyardPanel.h"
 #include "Shop.h"
 #include "shader/StarField.h"

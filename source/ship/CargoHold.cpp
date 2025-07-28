@@ -15,14 +15,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "CargoHold.h"
 
-#include "DataNode.h"
-#include "DataWriter.h"
-#include "Depreciation.h"
-#include "GameData.h"
-#include "Government.h"
-#include "Mission.h"
+#include "../DataNode.h"
+#include "../DataWriter.h"
+#include "../Depreciation.h"
+#include "../GameData.h"
+#include "../Government.h"
+#include "../Mission.h"
+#include "../System.h"
+
 #include "Outfit.h"
-#include "System.h"
 
 #include <algorithm>
 #include <cmath>

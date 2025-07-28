@@ -21,7 +21,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Interface.h"
 #include "PlayerInfo.h"
 #include "Screen.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "UI.h"
 
 #include <algorithm>

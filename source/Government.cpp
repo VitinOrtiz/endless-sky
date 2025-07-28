@@ -19,11 +19,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "DataNode.h"
 #include "Fleet.h"
 #include "GameData.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "Phrase.h"
 #include "Politics.h"
-#include "Ship.h"
-#include "ShipEvent.h"
+#include "ship/Ship.h"
+#include "ship/ShipEvent.h"
 
 #include <algorithm>
 #include <cmath>

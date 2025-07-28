@@ -16,8 +16,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
 #include "Command.h"
-#include "FireCommand.h"
-#include "FormationPositioner.h"
+#include "ship/FireCommand.h"
+#include "ship/FormationPositioner.h"
 #include "Point.h"
 
 #include <cstdint>

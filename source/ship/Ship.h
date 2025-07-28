@@ -15,20 +15,21 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Body.h"
+#include "../Body.h"
 
-#include "Angle.h"
+#include "../Angle.h"
+#include "../Command.h"
+#include "../EsUuid.h"
+#include "../Paragraphs.h"
+#include "../Personality.h"
+#include "../Point.h"
+#include "../Port.h"
+
 #include "Armament.h"
 #include "CargoHold.h"
-#include "Command.h"
-#include "EsUuid.h"
 #include "FireCommand.h"
 #include "Outfit.h"
-#include "Paragraphs.h"
-#include "Personality.h"
-#include "Point.h"
-#include "Port.h"
-#include "ship/ShipAICache.h"
+#include "ShipAICache.h"
 #include "ShipJumpNavigation.h"
 
 #include <array>

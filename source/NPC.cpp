@@ -26,8 +26,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Messages.h"
 #include "Planet.h"
 #include "PlayerInfo.h"
-#include "Ship.h"
-#include "ShipEvent.h"
+#include "ship/Ship.h"
+#include "ship/ShipEvent.h"
 #include "System.h"
 #include "UI.h"
 

@@ -39,7 +39,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Screen.h"
 #include "ScrollBar.h"
 #include "ScrollVar.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "image/Sprite.h"
 #include "image/SpriteSet.h"
 #include "shader/SpriteShader.h"

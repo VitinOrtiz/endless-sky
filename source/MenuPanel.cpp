@@ -32,7 +32,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Point.h"
 #include "PreferencesPanel.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "image/Sprite.h"
 #include "shader/StarField.h"
 #include "StartConditionsPanel.h"

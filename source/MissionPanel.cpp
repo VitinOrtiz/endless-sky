@@ -38,7 +38,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Preferences.h"
 #include "shader/RingShader.h"
 #include "Screen.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "image/Sprite.h"
 #include "image/SpriteSet.h"
 #include "shader/SpriteShader.h"

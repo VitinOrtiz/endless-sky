@@ -26,7 +26,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Interface.h"
 #include "MapDetailPanel.h"
 #include "Messages.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "PlayerInfo.h"
 #include "Screen.h"
 #include "System.h"

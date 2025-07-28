@@ -17,8 +17,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Planet.h"
 #include "PlayerInfo.h"
-#include "Ship.h"
-#include "ShipJumpNavigation.h"
+#include "ship/Ship.h"
+#include "ship/ShipJumpNavigation.h"
 #include "StellarObject.h"
 #include "System.h"
 #include "Wormhole.h"

@@ -17,9 +17,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "DataNode.h"
 #include "GameData.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "Planet.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "StellarObject.h"
 #include "System.h"
 #include "Trade.h"

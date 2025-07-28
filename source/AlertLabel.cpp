@@ -20,7 +20,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "shader/PointerShader.h"
 #include "Projectile.h"
 #include "shader/RingShader.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 
 #include <algorithm>
 

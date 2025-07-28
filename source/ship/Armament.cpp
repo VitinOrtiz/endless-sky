@@ -15,8 +15,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Armament.h"
 
+#include "../Logger.h"
+
 #include "FireCommand.h"
-#include "Logger.h"
 #include "Outfit.h"
 #include "Ship.h"
 #include "Weapon.h"

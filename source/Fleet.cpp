@@ -16,15 +16,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Fleet.h"
 
 #include "DataNode.h"
-#include "FormationPattern.h"
+#include "ship/FormationPattern.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
 #include "Phrase.h"
 #include "Planet.h"
 #include "Random.h"
-#include "Ship.h"
-#include "ShipJumpNavigation.h"
+#include "ship/Ship.h"
+#include "ship/ShipJumpNavigation.h"
 #include "StellarObject.h"
 #include "System.h"
 

@@ -18,7 +18,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Depreciation.h"
 #include "text/Format.h"
 #include "GameData.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "PlayerInfo.h"
 
 #include <algorithm>

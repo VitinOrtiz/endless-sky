@@ -37,7 +37,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfoPanel.h"
 #include "Port.h"
 #include "Screen.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "ShipyardPanel.h"
 #include "Shop.h"
 #include "SpaceportPanel.h"

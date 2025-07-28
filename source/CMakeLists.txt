@@ -25,8 +25,8 @@ target_sources(EndlessSkyLib PRIVATE
 	Angle.cpp
 	Angle.h
 	Animate.h
-	Armament.cpp
-	Armament.h
+	"ship/Armament.cpp"
+	"ship/Armament.h"
 	AsteroidField.cpp
 	AsteroidField.h
 	BankPanel.cpp
@@ -39,10 +39,10 @@ target_sources(EndlessSkyLib PRIVATE
 	Body.h
 	Camera.cpp
 	Camera.h
-	CaptureOdds.cpp
-	CaptureOdds.h
-	CargoHold.cpp
-	CargoHold.h
+	"ship/CaptureOdds.cpp"
+	"ship/CaptureOdds.h"
+	"ship/CargoHold.cpp"
+	"ship/CargoHold.h"
 	CategoryList.cpp
 	CategoryList.h
 	CategoryType.h
@@ -70,9 +70,9 @@ target_sources(EndlessSkyLib PRIVATE
 	ConversationPanel.h
 	CoreStartData.cpp
 	CoreStartData.h
-	DamageDealt.h
-	DamageProfile.cpp
-	DamageProfile.h
+	"ship/DamageDealt.h"
+	"ship/DamageProfile.cpp"
+	"ship/DamageProfile.h"
 	DataFile.cpp
 	DataFile.h
 	DataNode.cpp
@@ -102,21 +102,21 @@ target_sources(EndlessSkyLib PRIVATE
 	EscortDisplay.cpp
 	EscortDisplay.h
 	ExclusiveItem.h
-	FighterHitHelper.h
+	"ship/FighterHitHelper.h"
 	Files.cpp
 	Files.h
-	FireCommand.cpp
-	FireCommand.h
+	"ship/FireCommand.cpp"
+	"ship/FireCommand.h"
 	Fleet.cpp
 	Fleet.h
 	FleetCargo.cpp
 	FleetCargo.h
 	Flotsam.cpp
 	Flotsam.h
-	FormationPattern.cpp
-	FormationPattern.h
-	FormationPositioner.cpp
-	FormationPositioner.h
+	"ship/FormationPattern.cpp"
+	"ship/FormationPattern.h"
+	"ship/FormationPositioner.cpp"
+	"ship/FormationPositioner.h"
 	FrameTimer.cpp
 	FrameTimer.h
 	Galaxy.cpp
@@ -137,8 +137,8 @@ target_sources(EndlessSkyLib PRIVATE
 	Government.h
 	HailPanel.cpp
 	HailPanel.h
-	Hardpoint.cpp
-	Hardpoint.h
+	"ship/Hardpoint.cpp"
+	"ship/Hardpoint.h"
 	Hazard.cpp
 	Hazard.h
 	HiringPanel.cpp
@@ -151,7 +151,7 @@ target_sources(EndlessSkyLib PRIVATE
 	Interface.h
 	ItemInfoDisplay.cpp
 	ItemInfoDisplay.h
-	JumpType.h
+	"ship/JumpType.h"
 	Logger.cpp
 	Logger.h
 	LoadPanel.cpp
@@ -201,8 +201,8 @@ target_sources(EndlessSkyLib PRIVATE
 	NPCAction.h
 	News.cpp
 	News.h
-	Outfit.cpp
-	Outfit.h
+	"ship/Outfit.cpp"
+	"ship/Outfit.h"
 	OutfitInfoDisplay.cpp
 	OutfitInfoDisplay.h
 	OutfitterPanel.cpp
@@ -267,17 +267,17 @@ target_sources(EndlessSkyLib PRIVATE
 	ScrollBar.h
 	ScrollVar.h
 	Set.h
-	Ship.cpp
-	Ship.h
+	"ship/Ship.cpp"
+	"ship/Ship.h"
 	Shop.h
-	ShipEvent.cpp
-	ShipEvent.h
+	"ship/ShipEvent.cpp"
+	"ship/ShipEvent.h"
 	ShipInfoDisplay.cpp
 	ShipInfoDisplay.h
 	ShipInfoPanel.cpp
 	ShipInfoPanel.h
-	ShipJumpNavigation.cpp
-	ShipJumpNavigation.h
+	"ship/ShipJumpNavigation.cpp"
+	"ship/ShipJumpNavigation.h"
 	ShipManager.cpp
 	ShipManager.h
 	ShipNameDialog.cpp
@@ -319,8 +319,8 @@ target_sources(EndlessSkyLib PRIVATE
 	Variant.h
 	Visual.cpp
 	Visual.h
-	Weapon.cpp
-	Weapon.h
+	"ship/Weapon.cpp"
+	"ship/Weapon.h"
 	Weather.cpp
 	Weather.h
 	WeightedList.h

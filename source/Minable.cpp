@@ -21,7 +21,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "text/Format.h"
 #include "GameData.h"
 #include "MinableDamageDealt.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "pi.h"
 #include "Projectile.h"
 #include "Random.h"

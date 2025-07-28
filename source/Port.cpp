@@ -26,8 +26,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Politics.h"
 #include "Random.h"
-#include "Ship.h"
-#include "ShipEvent.h"
+#include "ship/Ship.h"
+#include "ship/ShipEvent.h"
 #include "image/SpriteSet.h"
 #include "System.h"
 

@@ -23,7 +23,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Point.h"
 #include "Screen.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "image/Sprite.h"
 #include "StellarObject.h"
 #include "System.h"

@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "MissionAction.h"
 
-#include "CargoHold.h"
+#include "ship/CargoHold.h"
 #include "ConversationPanel.h"
 #include "DataNode.h"
 #include "DataWriter.h"
@@ -23,9 +23,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "text/Format.h"
 #include "GameData.h"
 #include "GameEvent.h"
-#include "Outfit.h"
+#include "ship/Outfit.h"
 #include "PlayerInfo.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 #include "TextReplacements.h"
 #include "UI.h"
 

@@ -17,7 +17,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "DataNode.h"
 #include "GameData.h"
-#include "Ship.h"
+#include "ship/Ship.h"
 
 #include <algorithm>
 
