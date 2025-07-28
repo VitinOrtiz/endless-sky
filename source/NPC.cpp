@@ -15,11 +15,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "NPC.h"
 
-#include "ConversationPanel.h"
+#include "ui/panel/ConversationPanel.h"
 #include "DataNode.h"
 #include "DataWriter.h"
-#include "Dialog.h"
-#include "text/Format.h"
+#include "ui/Dialog.h"
+#include "ui/text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
@@ -29,7 +29,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "ship/Ship.h"
 #include "ship/ShipEvent.h"
 #include "System.h"
-#include "UI.h"
+#include "ui/UI.h"
 
 #include <algorithm>
 #include <vector>

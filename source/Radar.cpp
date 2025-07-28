@@ -16,9 +16,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Radar.h"
 
 #include "GameData.h"
-#include "shader/LineShader.h"
-#include "shader/PointerShader.h"
-#include "shader/RingShader.h"
+#include "ui/shader/LineShader.h"
+#include "ui/shader/PointerShader.h"
+#include "ui/shader/RingShader.h"
 
 #include <cmath>
 

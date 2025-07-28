@@ -14,14 +14,14 @@ endif()
 # Every source file (and header file) should be listed here, except main.cpp.
 # If you add a new file, add it to this list.
 target_sources(EndlessSkyLib PRIVATE
-	AI.cpp
-	AI.h
 	Account.cpp
 	Account.h
-	AlertLabel.cpp
-	AlertLabel.h
-	AmmoDisplay.cpp
-	AmmoDisplay.h
+	AI.cpp
+	AI.h
+	"ui/label/AlertLabel.cpp"
+	"ui/label/AlertLabel.h"
+	"ui/display/AmmoDisplay.cpp"
+	"ui/display/AmmoDisplay.h"
 	Angle.cpp
 	Angle.h
 	Animate.h
@@ -29,12 +29,12 @@ target_sources(EndlessSkyLib PRIVATE
 	"ship/Armament.h"
 	AsteroidField.cpp
 	AsteroidField.h
-	BankPanel.cpp
-	BankPanel.h
+	"ui/panel/BankPanel.cpp"
+	"ui/panel/BankPanel.h"
 	Bitset.cpp
 	Bitset.h
-	BoardingPanel.cpp
-	BoardingPanel.h
+	"ui/panel/BoardingPanel.cpp"
+	"ui/panel/BoardingPanel.h"
 	Body.cpp
 	Body.h
 	Camera.cpp
@@ -46,14 +46,14 @@ target_sources(EndlessSkyLib PRIVATE
 	CategoryList.cpp
 	CategoryList.h
 	CategoryType.h
-	ClickZone.h
+	"ui/ClickZone.h"
 	Collision.cpp
 	Collision.h
 	CollisionSet.cpp
 	CollisionSet.h
 	CollisionType.h
-	Color.cpp
-	Color.h
+	"ui/Color.cpp"
+	"ui/Color.h"
 	Command.cpp
 	Command.h
 	ConditionAssignments.cpp
@@ -66,8 +66,8 @@ target_sources(EndlessSkyLib PRIVATE
 	ConditionsStore.h
 	Conversation.cpp
 	Conversation.h
-	ConversationPanel.cpp
-	ConversationPanel.h
+	"ui/panel/ConversationPanel.cpp"
+	"ui/panel/ConversationPanel.h"
 	CoreStartData.cpp
 	CoreStartData.h
 	"ship/DamageDealt.h"
@@ -83,8 +83,8 @@ target_sources(EndlessSkyLib PRIVATE
 	Date.h
 	Depreciation.cpp
 	Depreciation.h
-	Dialog.cpp
-	Dialog.h
+	"ui/Dialog.cpp"
+	"ui/Dialog.h"
 	Dictionary.cpp
 	Dictionary.h
 	DistanceCalculationSettings.h
@@ -99,18 +99,18 @@ target_sources(EndlessSkyLib PRIVATE
 	Engine.h
 	EsUuid.cpp
 	EsUuid.h
-	EscortDisplay.cpp
-	EscortDisplay.h
+	"ui/display/EscortDisplay.cpp"
+	"ui/display/EscortDisplay.h"
 	ExclusiveItem.h
 	"ship/FighterHitHelper.h"
 	Files.cpp
 	Files.h
 	"ship/FireCommand.cpp"
 	"ship/FireCommand.h"
-	Fleet.cpp
-	Fleet.h
-	FleetCargo.cpp
-	FleetCargo.h
+	"ship/Fleet.cpp"
+	"ship/Fleet.h"
+	"ship/FleetCargo.cpp"
+	"ship/FleetCargo.h"
 	Flotsam.cpp
 	Flotsam.h
 	"ship/FormationPattern.cpp"
@@ -119,96 +119,96 @@ target_sources(EndlessSkyLib PRIVATE
 	"ship/FormationPositioner.h"
 	FrameTimer.cpp
 	FrameTimer.h
-	Galaxy.cpp
-	Galaxy.h
+	"ui/Galaxy.cpp"
+	"ui/Galaxy.h"
 	GameAction.cpp
 	GameAction.h
 	GameData.cpp
 	GameData.h
 	GameEvent.cpp
 	GameEvent.h
-	GameLoadingPanel.cpp
-	GameLoadingPanel.h
+	"ui/panel/GameLoadingPanel.cpp"
+	"ui/panel/GameLoadingPanel.h"
 	Gamerules.cpp
 	Gamerules.h
-	GameWindow.cpp
-	GameWindow.h
+	"ui/GameWindow.cpp"
+	"ui/GameWindow.h"
 	Government.cpp
 	Government.h
-	HailPanel.cpp
-	HailPanel.h
+	"ui/panel/HailPanel.cpp"
+	"ui/panel/HailPanel.h"
 	"ship/Hardpoint.cpp"
 	"ship/Hardpoint.h"
 	Hazard.cpp
 	Hazard.h
-	HiringPanel.cpp
-	HiringPanel.h
-	InfoPanelState.cpp
-	InfoPanelState.h
-	Information.cpp
-	Information.h
-	Interface.cpp
-	Interface.h
-	ItemInfoDisplay.cpp
-	ItemInfoDisplay.h
+	"ui/panel/HiringPanel.cpp"
+	"ui/panel/HiringPanel.h"
+	"ui/InfoPanelState.cpp"
+	"ui/InfoPanelState.h"
+	"ui/Information.cpp"
+	"ui/Information.h"
+	"ui/Interface.cpp"
+	"ui/Interface.h"
+	"ui/display/ItemInfoDisplay.cpp"
+	"ui/display/ItemInfoDisplay.h"
 	"ship/JumpType.h"
-	Logger.cpp
-	Logger.h
-	LoadPanel.cpp
-	LoadPanel.h
+	"ui/panel/LoadPanel.cpp"
+	"ui/panel/LoadPanel.h"
 	LocationFilter.cpp
 	LocationFilter.h
-	LogbookPanel.cpp
-	LogbookPanel.h
-	MainPanel.cpp
-	MainPanel.h
-	MapDetailPanel.cpp
-	MapDetailPanel.h
-	MapOutfitterPanel.cpp
-	MapOutfitterPanel.h
-	MapPanel.cpp
-	MapPanel.h
-	MapPlanetCard.cpp
-	MapPlanetCard.h
-	MapSalesPanel.cpp
-	MapSalesPanel.h
-	MapShipyardPanel.cpp
-	MapShipyardPanel.h
-	MenuAnimationPanel.cpp
-	MenuAnimationPanel.h
-	MenuPanel.cpp
-	MenuPanel.h
-	MessageLogPanel.cpp
-	MessageLogPanel.h
+	"ui/panel/LogbookPanel.cpp"
+	"ui/panel/LogbookPanel.h"
+	Logger.cpp
+	Logger.h
+	"ui/panel/MainPanel.cpp"
+	"ui/panel/MainPanel.h"
+	"ui/panel/MapDetailPanel.cpp"
+	"ui/panel/MapDetailPanel.h"
+	"ui/panel/MapOutfitterPanel.cpp"
+	"ui/panel/MapOutfitterPanel.h"
+	"ui/panel/MapPanel.cpp"
+	"ui/panel/MapPanel.h"
+	"ui/MapPlanetCard.cpp"
+	"ui/MapPlanetCard.h"
+	"ui/panel/MapSalesPanel.cpp"
+	"ui/panel/MapSalesPanel.h"
+	"ui/panel/MapShipyardPanel.cpp"
+	"ui/panel/MapShipyardPanel.h"
+	"ui/panel/MenuAnimationPanel.cpp"
+	"ui/panel/MenuAnimationPanel.h"
+	"ui/panel/MenuPanel.cpp"
+	"ui/panel/MenuPanel.h"
+	"ui/panel/MessageLogPanel.cpp"
+	"ui/panel/MessageLogPanel.h"
 	Messages.cpp
 	Messages.h
 	Minable.cpp
 	Minable.h
 	MinableDamageDealt.h
-	MiniMap.cpp
-	MiniMap.h
+	"ui/MiniMap.cpp"
+	"ui/MiniMap.h"
 	Mission.cpp
 	Mission.h
 	MissionAction.cpp
 	MissionAction.h
-	MissionPanel.cpp
-	MissionPanel.h
+	"ui/panel/MissionPanel.cpp"
+	"ui/panel/MissionPanel.h"
 	Mortgage.cpp
 	Mortgage.h
+	News.cpp
+	News.h
 	NPC.cpp
 	NPC.h
 	NPCAction.cpp
 	NPCAction.h
-	News.cpp
-	News.h
 	"ship/Outfit.cpp"
 	"ship/Outfit.h"
-	OutfitInfoDisplay.cpp
-	OutfitInfoDisplay.h
-	OutfitterPanel.cpp
-	OutfitterPanel.h
-	Panel.cpp
-	Panel.h
+	"ui/display/OutfitInfoDisplay.cpp"
+	"ui/display/OutfitInfoDisplay.h"
+	"ui/panel/OutfitterPanel.cpp"
+	"ui/panel/OutfitterPanel.h"
+	"ui/panel/Panel.cpp"
+	"ui/panel/Panel.h"
 	Paragraphs.cpp
 	Paragraphs.h
 	Person.cpp
@@ -217,16 +217,17 @@ target_sources(EndlessSkyLib PRIVATE
 	Personality.h
 	Phrase.cpp
 	Phrase.h
+	pi.h
 	Planet.cpp
 	Planet.h
-	PlanetLabel.cpp
-	PlanetLabel.h
-	PlanetPanel.cpp
-	PlanetPanel.h
+	"ui/label/PlanetLabel.cpp"
+	"ui/label/PlanetLabel.h"
+	"ui/panel/PlanetPanel.cpp"
+	"ui/panel/PlanetPanel.h"
 	PlayerInfo.cpp
 	PlayerInfo.h
-	PlayerInfoPanel.cpp
-	PlayerInfoPanel.h
+	"ui/panel/PlayerInfoPanel.cpp"
+	"ui/panel/PlayerInfoPanel.h"
 	Plugins.cpp
 	Plugins.h
 	Point.cpp
@@ -235,10 +236,10 @@ target_sources(EndlessSkyLib PRIVATE
 	Politics.h
 	Port.cpp
 	Port.h
-	Preferences.cpp
-	Preferences.h
-	PreferencesPanel.cpp
-	PreferencesPanel.h
+	"ui/Preferences.cpp"
+	"ui/Preferences.h"
+	"ui/panel/PreferencesPanel.cpp"
+	"ui/panel/PreferencesPanel.h"
 	PrintData.cpp
 	PrintData.h
 	Projectile.cpp
@@ -252,8 +253,8 @@ target_sources(EndlessSkyLib PRIVATE
 	RandomEvent.h
 	Rectangle.cpp
 	Rectangle.h
-	RenderBuffer.cpp
-	RenderBuffer.h
+	"ui/RenderBuffer.cpp"
+	"ui/RenderBuffer.h"
 	RouteEdge.cpp
 	RouteEdge.h
 	RoutePlan.cpp
@@ -261,37 +262,38 @@ target_sources(EndlessSkyLib PRIVATE
 	Sale.h
 	SavedGame.cpp
 	SavedGame.h
-	Screen.cpp
-	Screen.h
-	ScrollBar.cpp
-	ScrollBar.h
-	ScrollVar.h
+	"ui/Screen.cpp"
+	"ui/Screen.h"
+	"ui/ScrollBar.cpp"
+	"ui/ScrollBar.h"
+	"ui/ScrollVar.h"
 	Set.h
+	shift.h
 	"ship/Ship.cpp"
 	"ship/Ship.h"
 	Shop.h
 	"ship/ShipEvent.cpp"
 	"ship/ShipEvent.h"
-	ShipInfoDisplay.cpp
-	ShipInfoDisplay.h
-	ShipInfoPanel.cpp
-	ShipInfoPanel.h
+	"ui/display/ShipInfoDisplay.cpp"
+	"ui/display/ShipInfoDisplay.h"
+	"ui/panel/ShipInfoPanel.cpp"
+	"ui/panel/ShipInfoPanel.h"
 	"ship/ShipJumpNavigation.cpp"
 	"ship/ShipJumpNavigation.h"
-	ShipManager.cpp
-	ShipManager.h
-	ShipNameDialog.cpp
-	ShipNameDialog.h
-	ShipyardPanel.cpp
-	ShipyardPanel.h
-	ShopPanel.cpp
-	ShopPanel.h
-	SpaceportPanel.cpp
-	SpaceportPanel.h
+	"ship/ShipManager.cpp"
+	"ship/ShipManager.h"
+	"ui/panel/ShipNameDialog.cpp"
+	"ui/panel/ShipNameDialog.h"
+	"ui/panel/ShipyardPanel.cpp"
+	"ui/panel/ShipyardPanel.h"
+	"ui/panel/ShopPanel.cpp"
+	"ui/panel/ShopPanel.h"
+	"ui/panel/SpaceportPanel.cpp"
+	"ui/panel/SpaceportPanel.h"
 	StartConditions.cpp
 	StartConditions.h
-	StartConditionsPanel.cpp
-	StartConditionsPanel.h
+	"ui/panel/StartConditionsPanel.cpp"
+	"ui/panel/StartConditionsPanel.h"
 	StellarObject.cpp
 	StellarObject.h
 	StringInterner.cpp
@@ -303,20 +305,20 @@ target_sources(EndlessSkyLib PRIVATE
 	SystemEntry.h
 	TaskQueue.cpp
 	TaskQueue.h
-	TextArea.cpp
-	TextArea.h
+	"ui/TextArea.cpp"
+	"ui/TextArea.h"
 	TextReplacements.cpp
 	TextReplacements.h
 	Trade.cpp
 	Trade.h
-	TradingPanel.cpp
-	TradingPanel.h
-	UI.cpp
-	UI.h
+	"ui/panel/TradingPanel.cpp"
+	"ui/panel/TradingPanel.h"
+	"ui/UI.cpp"
+	"ui/UI.h"
 	UniverseObjects.cpp
 	UniverseObjects.h
-	Variant.cpp
-	Variant.h
+	"ship/Variant.cpp"
+	"ship/Variant.h"
 	Visual.cpp
 	Visual.h
 	"ship/Weapon.cpp"
@@ -329,8 +331,8 @@ target_sources(EndlessSkyLib PRIVATE
 	WormholeStrategy.h
 	ZipFile.cpp
 	ZipFile.h
-	opengl.cpp
-	opengl.h
+	"ui/opengl.cpp"
+	"ui/opengl.h"
 	pi.h
 	shift.h
 	audio/Audio.cpp
@@ -358,30 +360,30 @@ target_sources(EndlessSkyLib PRIVATE
 	image/Sprite.h
 	image/SpriteSet.cpp
 	image/SpriteSet.h
-	shader/BatchDrawList.cpp
-	shader/BatchDrawList.h
-	shader/BatchShader.cpp
-	shader/BatchShader.h
-	shader/DrawList.cpp
-	shader/DrawList.h
-	shader/FillShader.cpp
-	shader/FillShader.h
-	shader/FogShader.cpp
-	shader/FogShader.h
-	shader/LineShader.cpp
-	shader/LineShader.h
-	shader/OutlineShader.cpp
-	shader/OutlineShader.h
-	shader/PointerShader.cpp
-	shader/PointerShader.h
-	shader/RingShader.cpp
-	shader/RingShader.h
-	shader/Shader.cpp
-	shader/Shader.h
-	shader/SpriteShader.cpp
-	shader/SpriteShader.h
-	shader/StarField.cpp
-	shader/StarField.h
+	ui/shader/BatchDrawList.cpp
+	ui/shader/BatchDrawList.h
+	ui/shader/BatchShader.cpp
+	ui/shader/BatchShader.h
+	ui/shader/DrawList.cpp
+	ui/shader/DrawList.h
+	ui/shader/FillShader.cpp
+	ui/shader/FillShader.h
+	ui/shader/FogShader.cpp
+	ui/shader/FogShader.h
+	ui/shader/LineShader.cpp
+	ui/shader/LineShader.h
+	ui/shader/OutlineShader.cpp
+	ui/shader/OutlineShader.h
+	ui/shader/PointerShader.cpp
+	ui/shader/PointerShader.h
+	ui/shader/RingShader.cpp
+	ui/shader/RingShader.h
+	ui/shader/Shader.cpp
+	ui/shader/Shader.h
+	ui/shader/SpriteShader.cpp
+	ui/shader/SpriteShader.h
+	ui/shader/StarField.cpp
+	ui/shader/StarField.h
 	ship/ShipAICache.cpp
 	ship/ShipAICache.h
 	test/Test.cpp
@@ -390,23 +392,23 @@ target_sources(EndlessSkyLib PRIVATE
 	test/TestContext.h
 	test/TestData.cpp
 	test/TestData.h
-	text/Alignment.h
-	text/Clipboard.cpp
-	text/Clipboard.h
-	text/DisplayText.cpp
-	text/DisplayText.h
-	text/Font.cpp
-	text/Font.h
-	text/FontSet.cpp
-	text/FontSet.h
-	text/Format.cpp
-	text/Format.h
-	text/Layout.h
-	text/Table.cpp
-	text/Table.h
-	text/Truncate.h
-	text/Utf8.cpp
-	text/Utf8.h
-	text/WrappedText.cpp
-	text/WrappedText.h
+	ui/text/Alignment.h
+	ui/text/Clipboard.cpp
+	ui/text/Clipboard.h
+	ui/text/DisplayText.cpp
+	ui/text/DisplayText.h
+	ui/text/Font.cpp
+	ui/text/Font.h
+	ui/text/FontSet.cpp
+	ui/text/FontSet.h
+	ui/text/Format.cpp
+	ui/text/Format.h
+	ui/text/Layout.h
+	ui/text/Table.cpp
+	ui/text/Table.h
+	ui/text/Truncate.h
+	ui/text/Utf8.cpp
+	ui/text/Utf8.h
+	ui/text/WrappedText.cpp
+	ui/text/WrappedText.h
 )

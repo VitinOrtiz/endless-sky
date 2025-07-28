@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
 #include "ConditionAssignments.h"
-#include "ShipManager.h"
+#include "ship/ShipManager.h"
 
 #include <cstdint>
 #include <map>

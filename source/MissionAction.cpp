@@ -16,18 +16,18 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "MissionAction.h"
 
 #include "ship/CargoHold.h"
-#include "ConversationPanel.h"
+#include "ui/panel/ConversationPanel.h"
 #include "DataNode.h"
 #include "DataWriter.h"
-#include "Dialog.h"
-#include "text/Format.h"
+#include "ui/Dialog.h"
+#include "ui/text/Format.h"
 #include "GameData.h"
 #include "GameEvent.h"
 #include "ship/Outfit.h"
 #include "PlayerInfo.h"
 #include "ship/Ship.h"
 #include "TextReplacements.h"
-#include "UI.h"
+#include "ui/UI.h"
 
 using namespace std;
 

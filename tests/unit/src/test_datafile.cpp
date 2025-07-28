@@ -20,7 +20,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 // Include a helper functions.
 #include "datanode-factory.h"
-#include "../../../source/text/Format.h"
+#include "../../../source/ui/text/Format.h"
 #include "output-capture.hpp"
 
 // ... and any system includes needed for the test file.

@@ -17,7 +17,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Conversation.h"
 #include "DataNode.h"
-#include "Fleet.h"
+#include "ship/Fleet.h"
 #include "GameData.h"
 #include "ship/Outfit.h"
 #include "Phrase.h"

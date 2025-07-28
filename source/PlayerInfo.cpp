@@ -17,13 +17,13 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "AI.h"
 #include "audio/Audio.h"
-#include "ConversationPanel.h"
+#include "ui/panel/ConversationPanel.h"
 #include "DataFile.h"
 #include "DataWriter.h"
-#include "Dialog.h"
+#include "ui/Dialog.h"
 #include "DistanceMap.h"
 #include "Files.h"
-#include "text/Format.h"
+#include "ui/text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
@@ -34,7 +34,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Plugins.h"
 #include "Politics.h"
 #include "Port.h"
-#include "Preferences.h"
+#include "ui/Preferences.h"
 #include "RaidFleet.h"
 #include "Random.h"
 #include "SavedGame.h"
@@ -43,7 +43,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "StartConditions.h"
 #include "StellarObject.h"
 #include "System.h"
-#include "UI.h"
+#include "ui/UI.h"
 
 #include <algorithm>
 #include <cassert>

@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "StartConditions.h"
 
 #include "DataNode.h"
-#include "text/Format.h"
+#include "ui/text/Format.h"
 #include "GameData.h"
 #include "Logger.h"
 #include "Planet.h"

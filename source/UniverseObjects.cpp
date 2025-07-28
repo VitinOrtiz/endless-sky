@@ -18,7 +18,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "DataFile.h"
 #include "DataNode.h"
 #include "Files.h"
-#include "Information.h"
+#include "ui/Information.h"
 #include "Logger.h"
 #include "PlayerInfo.h"
 #include "image/Sprite.h"
