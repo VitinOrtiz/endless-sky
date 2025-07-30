@@ -13,22 +13,21 @@ You should have received a copy of the GNU General Public License along with
 this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#pragma once
+
 #include "Broker.h"
+#include "Message.h"
 
-#include <vector>
+#include <memory>
+#include <string>
 
-using namespace std;
-
-class Subscriber
+class Subscriber : std::enable_shared_from_this<Subscriber>
 {
-protected:
-	Broker *broker;
 public:
 	Subscriber() = default;
-	Subscriber(Broker &broker) : broker(&broker) {}
-	void Subscribe(const string &topic)
+	void Subscribe(const std::string &topic)
 	{
-		broker->Subscribe(topic, this);
+		Broker::getInstance()->Subscribe(topic, shared_from_this());
 	}
-	virtual void Receive(const Broker::Message *message, const string &topic);
+	virtual void Receive(const std::shared_ptr<Message> message, const std::string &topic) {};
 };

@@ -16,6 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Ship.h"
 
 #include "../audio/Audio.h"
+#include "Bay.h"
 #include "../CategoryList.h"
 #include "../CategoryType.h"
 #include "DamageDealt.h"
@@ -443,10 +444,10 @@ void Ship::Load(const DataNode &node, const ConditionsStore *playerConditions)
 			{
 				for(unsigned j = 1; j < BAY_SIDE.size(); ++j)
 					if(child.Token(i) == BAY_SIDE[j])
-						bay.side = j;
+						bay.SetSide(j);
 				for(unsigned j = 1; j < BAY_FACING.size(); ++j)
 					if(child.Token(i) == BAY_FACING[j])
-						bay.facing = BAY_ANGLE[j];
+						bay.SetFacing(std::make_shared<Angle>(BAY_ANGLE[j]));
 			}
 			if(child.HasChildren())
 				for(const DataNode &grand : child)
@@ -457,24 +458,24 @@ void Ship::Load(const DataNode &node, const ConditionsStore *playerConditions)
 					if(grandKey == "launch effect" && grandHasValue)
 					{
 						int count = grand.Size() >= 3 ? static_cast<int>(grand.Value(2)) : 1;
-						const Effect *e = GameData::Effects().Get(grand.Token(1));
-						bay.launchEffects.insert(bay.launchEffects.end(), count, e);
+						Effect *e = const_cast<Effect *>(GameData::Effects().Get(grand.Token(1)));
+						bay.InsertLaunchEffects(count, e);
 					}
 					else if(grandKey == "angle" && grandHasValue)
-						bay.facing = Angle(grand.Value(1));
+						bay.SetFacing(make_shared<Angle>(grand.Value(1)));
 					else
 					{
 						bool handled = false;
 						for(unsigned i = 1; i < BAY_SIDE.size(); ++i)
 							if(grandKey == BAY_SIDE[i])
 							{
-								bay.side = i;
+								bay.SetSide(i);
 								handled = true;
 							}
 						for(unsigned i = 1; i < BAY_FACING.size(); ++i)
 							if(grandKey == BAY_FACING[i])
 							{
-								bay.facing = BAY_ANGLE[i];
+								bay.SetFacing(std::make_shared<Angle>(BAY_ANGLE[i]));
 								handled = true;
 							}
 						if(!handled)
@@ -843,16 +844,19 @@ void Ship::FinishLoading(bool isNewInstance)
 	for(auto it = bays.begin(); it != bays.end(); )
 	{
 		Bay &bay = *it;
-		if(!bayCategories.Contains(bay.category))
+		if(!bayCategories.Contains(bay.Category()))
 		{
-			warning += "Invalid bay category: " + bay.category + "\n";
+			warning += "Invalid bay category: " + bay.Category() + "\n";
 			it = bays.erase(it);
 			continue;
 		}
 		else
 			++it;
-		if(bay.side == Bay::INSIDE && bay.launchEffects.empty() && Crew())
-			bay.launchEffects.emplace_back(GameData::Effects().Get("basic launch"));
+		if(bay.Side() == Bay::INSIDE && bay.LaunchEffects().empty() && Crew())
+		{
+			Effect * e = const_cast<Effect *>(GameData::Effects().Get("basic launch"));
+			bay.EmplaceLaunchEffects(e);
+		}
 	}
 
 	canBeCarried = bayCategories.Contains(attributes.Category());
@@ -1113,20 +1117,20 @@ void Ship::Save(DataWriter &out) const
 		}
 		for(const Bay &bay : bays)
 		{
-			double x = 2. * bay.point.X();
-			double y = 2. * bay.point.Y();
+			double x = 2. * bay.Position()->X();
+			double y = 2. * bay.Position()->Y();
 
-			out.Write("bay", bay.category, x, y);
+			out.Write("bay", bay.Category(), x, y);
 
-			if(!bay.launchEffects.empty() || bay.facing.Degrees() || bay.side)
+			if(!bay.LaunchEffects().empty() || bay.Facing()->Degrees() || bay.Side())
 			{
 				out.BeginChild();
 				{
-					if(bay.facing.Degrees())
-						out.Write("angle", bay.facing.Degrees());
-					if(bay.side)
-						out.Write(BAY_SIDE[bay.side]);
-					for(const Effect *effect : bay.launchEffects)
+					if(bay.Facing()->Degrees())
+						out.Write("angle", bay.Facing()->Degrees());
+					if(bay.Side())
+						out.Write(BAY_SIDE[bay.Side()]);
+					for(const Effect *effect : bay.LaunchEffects())
 						out.Write("launch effect", effect->Name());
 				}
 				out.EndChild();
@@ -1441,8 +1445,8 @@ void Ship::Place(Point position, Point velocity, Angle angle, bool isDeparting)
 		// Set swizzle for any carried ships too.
 		for(const auto &bay : bays)
 		{
-			if(bay.ship)
-				bay.ship->SetSwizzle(bay.ship->customSwizzle ? bay.ship->customSwizzle : swizzle);
+			if(bay.Fighter())
+				bay.Fighter()->SetSwizzle(bay.Fighter()->customSwizzle ? bay.Fighter()->customSwizzle : swizzle);
 		}
 	}
 }
@@ -1739,15 +1743,15 @@ void Ship::Launch(list<shared_ptr<Ship>> &ships, vector<Visual> &visuals)
 		return;
 
 	for(Bay &bay : bays)
-		if(bay.ship
-			&& ((bay.ship->Commands().Has(Command::DEPLOY) && !Random::Int(40 + 20 * !bay.ship->attributes.Get("automaton")))
+		if(bay.Fighter()
+			&& ((bay.Fighter()->Commands().Has(Command::DEPLOY) && !Random::Int(40 + 20 * !bay.Fighter()->attributes.Get("automaton")))
 			|| (ejecting && !Random::Int(6))))
 		{
 			// Resupply any ships launching of their own accord.
 			if(!ejecting)
 			{
 				// Determine which of the fighter's weapons we can restock.
-				auto restockable = bay.ship->GetArmament().RestockableAmmo();
+				auto restockable = bay.Fighter()->GetArmament().RestockableAmmo();
 				auto toRestock = map<const Outfit *, int>{};
 				for(auto &&ammo : restockable)
 				{
@@ -1755,7 +1759,7 @@ void Ship::Launch(list<shared_ptr<Ship>> &ships, vector<Visual> &visuals)
 					if(count > 0)
 						toRestock.emplace(ammo, count);
 				}
-				auto takenAmmo = TransferAmmo(toRestock, *this, *bay.ship);
+				auto takenAmmo = TransferAmmo(toRestock, *this, *bay.Fighter());
 				bool tookAmmo = !takenAmmo.empty();
 				if(tookAmmo)
 				{
@@ -1766,42 +1770,42 @@ void Ship::Launch(list<shared_ptr<Ship>> &ships, vector<Visual> &visuals)
 
 				// This ship will refuel naturally based on the carrier's fuel
 				// collection, but the carrier may have some reserves to spare.
-				double maxFuel = bay.ship->attributes.Get("fuel capacity");
+				double maxFuel = bay.Fighter()->attributes.Get("fuel capacity");
 				if(maxFuel)
 				{
 					double spareFuel = fuel - navigation.JumpFuel();
 					if(spareFuel > 0.)
-						TransferFuel(spareFuel, bay.ship.get());
+						TransferFuel(spareFuel, bay.Fighter().get());
 					// If still low or out-of-fuel, re-stock the carrier and don't
 					// launch, except if some ammo was taken (since we can fight).
-					if(!tookAmmo && bay.ship->fuel < .25 * maxFuel)
+					if(!tookAmmo && bay.Fighter()->fuel < .25 * maxFuel)
 					{
-						TransferFuel(bay.ship->fuel, this);
+						TransferFuel(bay.Fighter()->fuel, this);
 						continue;
 					}
 				}
 			}
 			// Those being ejected may be destroyed if they are already injured.
-			else if(bay.ship->Health() < Random::Real())
-				bay.ship->SelfDestruct();
+			else if(bay.Fighter()->Health() < Random::Real())
+				bay.Fighter()->SelfDestruct();
 
-			ships.push_back(bay.ship);
-			double maxV = bay.ship->MaxVelocity() * (1 + bay.ship->IsDestroyed());
-			Point exitPoint = position + angle.Rotate(bay.point);
+			ships.push_back(bay.Fighter());
+			double maxV = bay.Fighter()->MaxVelocity() * (1 + bay.Fighter()->IsDestroyed());
+			Point exitPoint = position + angle.Rotate(*bay.Position().get());
 			// When ejected, ships depart haphazardly.
-			Angle launchAngle = ejecting ? Angle(exitPoint - position) : angle + bay.facing;
+			Angle launchAngle = ejecting ? Angle(exitPoint - position) : angle + *bay.Facing().get();
 			Point v = velocity + (.3 * maxV) * launchAngle.Unit() + (.2 * maxV) * Angle::Random().Unit();
-			bay.ship->Place(exitPoint, v, launchAngle, false);
-			bay.ship->SetSystem(currentSystem);
-			bay.ship->SetParent(shared_from_this());
-			bay.ship->UnmarkForRemoval();
+			bay.Fighter()->Place(exitPoint, v, launchAngle, false);
+			bay.Fighter()->SetSystem(currentSystem);
+			bay.Fighter()->SetParent(shared_from_this());
+			bay.Fighter()->UnmarkForRemoval();
 			// Update the cached sum of carried ship masses.
-			carriedMass -= bay.ship->Mass();
+			carriedMass -= bay.Fighter()->Mass();
 			// Create the desired launch effects.
-			for(const Effect *effect : bay.launchEffects)
+			for(const Effect *effect : bay.LaunchEffects())
 				visuals.emplace_back(*effect, exitPoint, velocity, launchAngle);
 
-			bay.ship.reset();
+			bay.Fighter().reset();
 		}
 }
 
@@ -2705,8 +2709,8 @@ int Ship::WasCaptured(const shared_ptr<Ship> &capturer)
 	// Fighters should flee a disabled ship, but if the player manages to capture
 	// the ship before they flee, the fighters are captured, too.
 	for(const Bay &bay : bays)
-		if(bay.ship)
-			bay.ship->WasCaptured(capturer);
+		if(bay.Fighter())
+			bay.Fighter()->WasCaptured(capturer);
 	// If a flagship is captured, its escorts become independent.
 	for(const auto &it : escorts)
 	{
@@ -3324,7 +3328,7 @@ int Ship::BaysFree(const string &category) const
 {
 	int count = 0;
 	for(const Bay &bay : bays)
-		count += (bay.category == category) && !bay.ship;
+		count += (bay.Category() == category) && !bay.Fighter();
 	return count;
 }
 
@@ -3335,7 +3339,7 @@ int Ship::BaysTotal(const string &category) const
 {
 	int count = 0;
 	for(const Bay &bay : bays)
-		count += (bay.category == category);
+		count += (bay.Category() == category);
 	return count;
 }
 
@@ -3392,9 +3396,9 @@ bool Ship::Carry(const shared_ptr<Ship> &ship)
 	const bool shouldTransferCargo = !IsYours() || Preferences::Has("Fighters transfer cargo");
 
 	for(Bay &bay : bays)
-		if((bay.category == category) && !bay.ship)
+		if((bay.Category() == category) && !bay.Fighter())
 		{
-			bay.ship = ship;
+			bay.SetFighter(ship);
 			ship->SetSystem(nullptr);
 			ship->SetPlanet(nullptr);
 			ship->SetTargetSystem(nullptr);
@@ -3436,19 +3440,19 @@ bool Ship::Carry(const shared_ptr<Ship> &ship)
 void Ship::UnloadBays()
 {
 	for(Bay &bay : bays)
-		if(bay.ship)
+		if(bay.Fighter())
 		{
-			carriedMass -= bay.ship->Mass();
-			bay.ship->SetSystem(currentSystem);
-			bay.ship->SetPlanet(landingPlanet);
-			bay.ship->UnmarkForRemoval();
-			bay.ship.reset();
+			carriedMass -= bay.Fighter()->Mass();
+			bay.Fighter()->SetSystem(currentSystem);
+			bay.Fighter()->SetPlanet(landingPlanet);
+			bay.Fighter()->UnmarkForRemoval();
+			bay.Fighter().reset();
 		}
 }
 
 
 
-const vector<Ship::Bay> &Ship::Bays() const
+const vector<Bay> &Ship::Bays() const
 {
 	return bays;
 }
@@ -3461,13 +3465,13 @@ bool Ship::PositionFighters() const
 {
 	bool hasVisible = false;
 	for(const Bay &bay : bays)
-		if(bay.ship && bay.side)
+		if(bay.Fighter() && bay.Side())
 		{
 			hasVisible = true;
-			bay.ship->position = angle.Rotate(bay.point) * Zoom() + position;
-			bay.ship->velocity = velocity;
-			bay.ship->angle = angle + bay.facing;
-			bay.ship->zoom = zoom;
+			bay.Fighter()->position = angle.Rotate(*bay.Position().get()) * Zoom() + position;
+			bay.Fighter()->velocity = velocity;
+			bay.Fighter()->angle = angle + *bay.Facing().get();
+			bay.Fighter()->zoom = zoom;
 		}
 	return hasVisible;
 }
@@ -4000,8 +4004,8 @@ int Ship::StepDestroyed(vector<Visual> &visuals, list<shared_ptr<Flotsam>> &flot
 
 			// Any ships that failed to launch from this ship are destroyed.
 			for(Bay &bay : bays)
-				if(bay.ship)
-					bay.ship->Destroy();
+				if(bay.Fighter())
+					bay.Fighter()->Destroy();
 		}
 		energy = 0.;
 		heat = 0.;
@@ -4055,8 +4059,8 @@ void Ship::DoGeneration()
 {
 	// First, allow any carried ships to do their own generation.
 	for(const Bay &bay : bays)
-		if(bay.ship)
-			bay.ship->DoGeneration();
+		if(bay.Fighter())
+			bay.Fighter()->DoGeneration();
 
 	// Shield and hull recharge. This uses whatever energy is left over from the
 	// previous frame, so that it will not steal energy from movement, etc.
@@ -4108,8 +4112,8 @@ void Ship::DoGeneration()
 			// If this ship is carrying fighters, determine their repair priority.
 			vector<pair<double, Ship *>> carried;
 			for(const Bay &bay : bays)
-				if(bay.ship)
-					carried.emplace_back(1. - bay.ship->Health(), bay.ship.get());
+				if(bay.Fighter())
+					carried.emplace_back(1. - bay.Fighter()->Health(), bay.Fighter().get());
 			sort(carried.begin(), carried.end(), (isYours && Preferences::Has(FIGHTER_REPAIR))
 				// Players may use a parallel strategy, to launch fighters in waves.
 				? [] (const pair<double, Ship *> &lhs, const pair<double, Ship *> &rhs)
@@ -5245,7 +5249,7 @@ void Ship::Jettison(shared_ptr<Flotsam> toJettison)
 	size_t bayIndex = 0;
 	for(const auto &bay : carrier->Bays())
 	{
-		if(bay.ship.get() == this)
+		if(bay.Fighter().get() == this)
 		{
 			carrier->jettisonedFromBay.emplace_back(toJettison, bayIndex);
 			break;

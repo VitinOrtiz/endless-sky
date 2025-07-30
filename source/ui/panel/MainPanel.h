@@ -69,7 +69,6 @@ private:
 
 private:
 	PlayerInfo &player;
-
 	Engine engine;
 
 	// These are the pending ShipEvents that have yet to be processed.

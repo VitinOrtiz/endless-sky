@@ -15,37 +15,34 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Subscriber.h"
-#include "Publisher.h"
+#include "Message.h"
 
-#include <unordered_map>
-#include <queue>
-#include <vector>
 #include <condition_variable>
+#include <memory>
 #include <mutex>
+#include <queue>
+#include <unordered_map>
+#include <vector>
+
+class Subscriber;
 
 class Broker
 {
-public:
-	class Message
-	{
-	private:
-		Publisher *publisher;
-		std::string text;
-	public:
-		Message(Message &msg) = default;
-		Message(Publisher &pub, std::string txt) : publisher(&pub), text(txt) {}
-		Publisher *Publisher() const { return publisher; }
-		std::string Text() const { return text; }
-	};
 private:
-	unordered_map<std::string, queue<Broker::Message *>> topics;
-	unordered_map<std::string, vector<Subscriber *>> subscribers;
-	mutex mutex_;
-	condition_variable cond_;
+	static std::shared_ptr<Broker> instance;
+
+	std::unordered_map<std::string, std::queue<std::shared_ptr<Message>>> topics;
+	std::unordered_map<std::string, std::vector<std::shared_ptr<Subscriber>>> subscribers;
+	std::mutex mutex_;
+	std::condition_variable cond_;
+
+	Broker() {}
 public:
-	void Subscribe(const std::string &topic, Subscriber *subscriber);
-	void Publish(const std::string &topic, Broker::Message *message);
-	void ProcessEvents();
+	Broker(Broker const &) = delete;
+	void operator=(Broker const &) = delete;
+	static std::shared_ptr<Broker> getInstance();
+	void Subscribe(const std::string &topic, std::shared_ptr<Subscriber> subscriber);
+	void Publish(const std::string &topic, std::shared_ptr<Message> message);
+	void ProcessMessages();
 };
 

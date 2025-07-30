@@ -1,4 +1,4 @@
-/* Publisher.h
+/* Broker.cpp
 Copyright (c) 2016 by Michael Zahniser
 
 Endless Sky is free software: you can redistribute it and/or modify it under the
@@ -15,18 +15,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Broker.h"
-#include "Message.h"
-
 #include <memory>
 #include <string>
 
-class Publisher
+class Message
 {
+private:
+	std::string data;
+	std::string text;
 public:
-	Publisher() = default;
-	void Publish(const std::string &topic, std::shared_ptr<Message> message)
-	{
-		Broker::getInstance()->Publish(topic, message);
-	}
+	Message(Message &msg) = default;
+	Message(std::string &data, std::string &txt) : data(std::move(data)), text(std::move(txt)) {}
+	std::string Data() const { return data; }
+	std::string Text() const { return text; }
 };

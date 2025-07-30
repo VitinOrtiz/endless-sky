@@ -37,63 +37,63 @@ namespace { // test namespace
 // #region unit tests
 SCENARIO( "Creating a Ship::Bay instance", "[ship][bay]" ) {
 	// No default constructor.
-	REQUIRE_FALSE( std::is_default_constructible_v<Ship::Bay> );
+	REQUIRE_FALSE( std::is_default_constructible_v<Bay> );
 
 	GIVEN( "a reference position" ) {
-		auto bay = Ship::Bay(20., 40., "Fighter");
+		auto bay = Bay(20., 40., "Fighter");
 		THEN( "the position is scaled by 50%" ) {
-			CHECK_THAT( bay.point.X(), Catch::Matchers::WithinAbs(10., 0.0001) );
-			CHECK_THAT( bay.point.Y(), Catch::Matchers::WithinAbs(20., 0.0001) );
+			CHECK_THAT( bay.Position()->X(), Catch::Matchers::WithinAbs(10., 0.0001));
+			CHECK_THAT( bay.Position()->Y(), Catch::Matchers::WithinAbs(20., 0.0001));
 		}
 	}
 	GIVEN( "a category string" ) {
 		std::string value = "any string value";
-		auto bay = Ship::Bay(0., 0., value);
+		auto bay = Bay(0., 0., value);
 		THEN( "the category is stored" ) {
-			CHECK( bay.category == value );
+			CHECK( bay.Category() == value);
 		}
 	}
 }
 
 SCENARIO( "A Ship::Bay instance is being copied", "[ship][bay]") {
-	auto source = Ship::Bay(-10., 10., "Fighter");
+	auto source = Bay(-10., 10., "Fighter");
 	GIVEN( "the bay is occupied" ) {
 		auto occupant = std::make_shared<Ship>();
 		REQUIRE( occupant );
-		source.ship = occupant;
-		REQUIRE( source.ship );
+		source.SetFighter(occupant);
+		REQUIRE( source.Fighter());
 		WHEN( "the copy is made via ctor" ) {
-			Ship::Bay copy(source);
+			Bay copy(source);
 			THEN( "the copy has the correct attributes" ) {
-				CHECK( copy.point.X() == source.point.X() );
-				CHECK( copy.point.Y() == source.point.Y() );
-				CHECK( copy.category == source.category );
-				CHECK( copy.side == source.side );
-				CHECK( copy.facing.Degrees() == source.facing.Degrees() );
-				CHECK( copy.launchEffects == source.launchEffects );
+				CHECK( copy.Position()->X() == source.Position()->X() );
+				CHECK( copy.Position()->Y() == source.Position()->Y() );
+				CHECK( copy.Category() == source.Category());
+				CHECK( copy.Side() == source.Side());
+				CHECK( copy.Facing()->Degrees() == source.Facing()->Degrees());
+				CHECK( copy.LaunchEffects() == source.LaunchEffects());
 			}
 			THEN( "the copy is unoccupied" ) {
-				CHECK_FALSE( copy.ship );
+				CHECK_FALSE( copy.Fighter() );
 			}
 			THEN( "the source is still occupied" ) {
-				CHECK( source.ship == occupant );
+				CHECK( source.Fighter() == occupant);
 			}
 		}
 		WHEN( "the copy is made via assignment" ) {
-			Ship::Bay copy = source;
+			Bay copy = source;
 			THEN( "the copy has the correct attributes" ) {
-				CHECK( copy.point.X() == source.point.X() );
-				CHECK( copy.point.Y() == source.point.Y() );
-				CHECK( copy.category == source.category );
-				CHECK( copy.side == source.side );
-				CHECK( copy.facing.Degrees() == source.facing.Degrees() );
-				CHECK( copy.launchEffects == source.launchEffects );
+				CHECK( copy.Position()->X() == source.Position()->X());
+				CHECK( copy.Position()->Y() == source.Position()->Y() );
+				CHECK( copy.Category() == source.Category());
+				CHECK( copy.Side() == source.Side());
+				CHECK( copy.Facing()->Degrees() == source.Facing()->Degrees());
+				CHECK( copy.LaunchEffects() == source.LaunchEffects());
 			}
 			THEN( "the copy is unoccupied" ) {
-				CHECK_FALSE( copy.ship );
+				CHECK_FALSE( copy.Fighter() );
 			}
 			THEN( "the source is still occupied" ) {
-				CHECK( source.ship == occupant );
+				CHECK( source.Fighter() == occupant);
 			}
 		}
 	}

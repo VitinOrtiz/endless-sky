@@ -31,6 +31,8 @@ target_sources(EndlessSkyLib PRIVATE
 	AsteroidField.h
 	"ui/panel/BankPanel.cpp"
 	"ui/panel/BankPanel.h"
+	"ship/Bay.cpp"
+	"ship/Bay.h"
 	Bitset.cpp
 	Bitset.h
 	"ui/panel/BoardingPanel.cpp"
@@ -180,6 +182,7 @@ target_sources(EndlessSkyLib PRIVATE
 	"ui/panel/MenuPanel.h"
 	"ui/panel/MessageLogPanel.cpp"
 	"ui/panel/MessageLogPanel.h"
+	"broker/Message.h"
 	Messages.cpp
 	Messages.h
 	Minable.cpp

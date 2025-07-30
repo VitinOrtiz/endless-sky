@@ -510,9 +510,9 @@ void NPC::Do(const ShipEvent &event, PlayerInfo &player, UI *ui, const Mission *
 	bool newEvent = ~(shipEvents[ship.get()]) & type;
 	// Apply this event to the ship and any ships it is carrying.
 	shipEvents[ship.get()] |= type;
-	for(const Ship::Bay &bay : ship->Bays())
-		if(bay.ship)
-			shipEvents[bay.ship.get()] |= type;
+	for(const Bay &bay : ship->Bays())
+		if(bay.Fighter())
+			shipEvents[bay.Fighter().get()] |= type;
 
 	// Run any mission actions that trigger on this event.
 	DoActions(event, newEvent, player, ui, caller);

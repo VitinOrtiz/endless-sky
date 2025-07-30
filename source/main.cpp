@@ -16,6 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "audio/Audio.h"
+#include "broker/Broker.h"
 #include "Command.h"
 #include "Conversation.h"
 #include "DataFile.h"
@@ -236,6 +237,9 @@ int main(int argc, char *argv[])
 
 		if(isTesting && !noTestMute)
 			Audio::SetVolume(0, SoundCategory::MASTER);
+
+		// Broker to implement pub/sub design pattern
+		thread t(&Broker::ProcessMessages, Broker::getInstance());
 
 		// This is the main loop where all the action begins.
 		GameLoop(player, queue, conversation, testToRunName, debugMode);

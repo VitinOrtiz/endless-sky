@@ -21,7 +21,16 @@ using namespace std;
 
 
 
-void Broker::Subscribe(const string &topic, Subscriber *subscriber)
+static shared_ptr<Broker> Broker::getInstance()
+{
+	if(!instance)
+		instance = std::make_shared<Broker>();
+	return instance;
+}
+
+
+
+void Broker::Subscribe(const string &topic, shared_ptr<Subscriber> subscriber)
 {
 	lock_guard<mutex> lock(mutex_);
 	subscribers[topic].push_back(subscriber);
@@ -29,7 +38,7 @@ void Broker::Subscribe(const string &topic, Subscriber *subscriber)
 
 
 
-void Broker::Publish(const string &topic, Broker::Message *message)
+void Broker::Publish(const string &topic, shared_ptr<Message> message)
 {
 	{
 		lock_guard<mutex> lock(mutex_);
@@ -40,7 +49,7 @@ void Broker::Publish(const string &topic, Broker::Message *message)
 
 
 
-void Broker::ProcessEvents()
+void Broker::ProcessMessages()
 {
 	unique_lock<mutex> lock(mutex_);
 	while(true)
@@ -55,12 +64,12 @@ void Broker::ProcessEvents()
 		for(auto &topic : topics)
 		{
 			string topic_name = topic.first;
-			queue<Broker::Message *> &q = topic.second;
+			queue<shared_ptr<Message>> &q = topic.second;
 			while(!q.empty())
 			{
-				Broker::Message *message = q.front();
+				shared_ptr<Message> message = q.front();
 				q.pop();
-				vector<Subscriber *> &subs = subscribers[topic_name];
+				vector<shared_ptr<Subscriber>> &subs = subscribers[topic_name];
 				for(auto &sub : subs)
 					sub->Receive(message, topic_name);
 			}

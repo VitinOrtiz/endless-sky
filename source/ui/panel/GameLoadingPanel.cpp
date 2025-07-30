@@ -24,6 +24,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "../../image/MaskManager.h"
 #include "MenuAnimationPanel.h"
 #include "MenuPanel.h"
+#include "Panel.h"
 #include "../../PlayerInfo.h"
 #include "../../Point.h"
 #include "../shader/PointerShader.h"

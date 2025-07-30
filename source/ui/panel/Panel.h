@@ -41,6 +41,7 @@ class UI;
 // allow them to receive any events that it does not know how to handle.
 class Panel {
 public:
+	Panel() = default;
 	// Draw a sprite repeatedly to make a vertical edge.
 	static void DrawEdgeSprite(const Sprite *edgeSprite, int posX);
 

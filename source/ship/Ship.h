@@ -18,17 +18,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "../Body.h"
 
 #include "../Angle.h"
+#include "Armament.h"
+#include "Bay.h"
 #include "../Command.h"
+#include "CargoHold.h"
 #include "../EsUuid.h"
+#include "FireCommand.h"
+#include "Outfit.h"
 #include "../Paragraphs.h"
 #include "../Personality.h"
 #include "../Point.h"
 #include "../Port.h"
-
-#include "Armament.h"
-#include "CargoHold.h"
-#include "FireCommand.h"
-#include "Outfit.h"
 #include "ShipAICache.h"
 #include "ShipJumpNavigation.h"
 
@@ -40,6 +40,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
+class Bay;
 class ConditionsStore;
 class DamageDealt;
 class DataNode;
@@ -67,34 +68,6 @@ class Visual;
 // limits of what the AI knows how to command them to do.
 class Ship : public Body, public std::enable_shared_from_this<Ship> {
 public:
-	class Bay {
-	public:
-		Bay(double x, double y, std::string category) : point(x * .5, y * .5), category(std::move(category)) {}
-		Bay(Bay &&) = default;
-		Bay &operator=(Bay &&) = default;
-		~Bay() = default;
-
-		// Copying a bay does not copy the ship inside it.
-		Bay(const Bay &b) : point(b.point), category(b.category), side(b.side),
-			facing(b.facing), launchEffects(b.launchEffects) {}
-		Bay &operator=(const Bay &b) { return *this = Bay(b); }
-
-		Point point;
-		std::shared_ptr<Ship> ship;
-		std::string category;
-
-		uint8_t side = 0;
-		static const uint8_t INSIDE = 0;
-		static const uint8_t OVER = 1;
-		static const uint8_t UNDER = 2;
-
-		// The angle at which the carried ship will depart, relative to the carrying ship.
-		Angle facing;
-
-		// The launch effect(s) to be simultaneously played when the bay's ship launches.
-		std::vector<const Effect *> launchEffects;
-	};
-
 	class EnginePoint : public Point {
 	public:
 		EnginePoint(Point pos, double zoom) : Point(pos), zoom(zoom) {}
