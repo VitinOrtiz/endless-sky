@@ -173,11 +173,12 @@ namespace {
 
 	void Deploy(shared_ptr<Ship> ship, const bool includingDamaged)
 	{
+		string actor = ship->UUID().ToString();
 		string predicate = includingDamaged ? " including damaged" : "";
-		string text = "deploy" + predicate;
-		string data = ship->UUID().ToString();
-		shared_ptr<Message> msg = make_shared<Message>(data, text);
-		Broker::getInstance()->Publish("bay", msg);
+		string action = "deploy" + predicate;
+		string target = "";
+		shared_ptr<Message> msg = make_shared<Message>(actor, action, target);
+		Broker::GetInstance().Publish("Ship/Bay", msg);
 	}
 
 	// Helper function for selecting the ships for formation commands.
@@ -262,7 +263,7 @@ namespace {
 	// Check if the ship contains a carried ship that needs to launch.
 	bool HasDeployments(const Ship &ship)
 	{
-		for(const Bay &bay : ship.Bays())
+		for (const Bay &bay : ship.Bays())
 			if(bay.Fighter() && bay.Fighter()->HasDeployOrder())
 				return true;
 		return false;
@@ -3849,7 +3850,7 @@ void AI::AutoFire(const Ship &ship, FireCommand &command, bool secondary, bool i
 		if(it != orders.end() && it->second.target.lock() == currentTarget)
 		{
 			disabledOverride = (it->second.type == Orders::FINISH_OFF);
-			friendlyOverride = disabledOverride | (it->second.type == Orders::ATTACK);
+			friendlyOverride = disabledOverride || (it->second.type == Orders::ATTACK);
 		}
 	}
 	bool currentIsEnemy = currentTarget

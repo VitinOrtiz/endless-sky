@@ -21,19 +21,18 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 void Bay::Receive(const std::shared_ptr<Message> message, const std::string &topic) 
 {
-	if(topic == "bay")
+	if(topic == "Ship/Bay")
 	{
-		if(carrier && message->Data() == carrier->UUID().ToString())
+		// Deploy
+		if(message->Action().substr(0, 6) == "deploy")
 		{
-			// Deploy
-			if(message->Text() == "deploy")
-				Deploy(false);
-			if(message->Text() == "deploy including damaged")
-				Deploy(true);
-
-			// Has Deployments
-			if(message->Text() == "has deploy orders")
-				HasDeployOrders();
+			if(carrier && carrier->UUID().ToString() == message->Actor())
+			{
+				if(message->Action() == "deploy including damaged")
+					Deploy(true);
+				else
+					Deploy(false);
+			}
 		}
 	}
 }
@@ -47,12 +46,3 @@ void Bay::Deploy(bool includingDamaged) const
 		Fighter()->SetCommands(Command::DEPLOY);
 }
 
-
-
-bool Bay::HasDeployOrders() const
-{
-	if(Fighter() && Fighter()->HasDeployOrder())
-		return true;
-	else
-		return false;
-}

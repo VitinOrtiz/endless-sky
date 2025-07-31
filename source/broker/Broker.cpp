@@ -17,62 +17,70 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include <thread>
 
-using namespace std;
-
-
-
-static shared_ptr<Broker> Broker::getInstance()
-{
-	if(!instance)
-		instance = std::make_shared<Broker>();
-	return instance;
-}
-
-
-
-void Broker::Subscribe(const string &topic, shared_ptr<Subscriber> subscriber)
-{
-	lock_guard<mutex> lock(mutex_);
-	subscribers[topic].push_back(subscriber);
-}
-
-
-
-void Broker::Publish(const string &topic, shared_ptr<Message> message)
-{
-	{
-		lock_guard<mutex> lock(mutex_);
-		topics[topic].push(message);
-	}
-	cond_.notify_all();
-}
-
-
-
 void Broker::ProcessMessages()
 {
-	unique_lock<mutex> lock(mutex_);
-	while(true)
+	while(running)
+		std::shared_ptr<Message> message;
+	std::unique_lock<std::mutex> lock(topicsMutex);
 	{
-		cond_.wait(lock, [this]
-			{
-				for(const auto &topic : topics)
-					if(!topic.second.empty())
-						return true;
-				return false;
+		cv.wait(lock, [this]() {
+			for(auto &topic : topics)
+				return !topic.second.empty() || !running;
 			});
 		for(auto &topic : topics)
 		{
-			string topic_name = topic.first;
-			queue<shared_ptr<Message>> &q = topic.second;
-			while(!q.empty())
+			auto &topic_name = topic.first;
+			auto &topicQueue = topic.second;
+			while(!topicQueue.empty())
 			{
-				shared_ptr<Message> message = q.front();
-				q.pop();
-				vector<shared_ptr<Subscriber>> &subs = subscribers[topic_name];
-				for(auto &sub : subs)
+				auto &message = topicQueue.front();
+				topicQueue.pop();
+
+				auto &topicSubscribers = subscribers[topic_name];
+				for(auto &sub : topicSubscribers)
 					sub->Receive(message, topic_name);
 			}
 		}
 	}
+}
+
+static Broker& Broker::GetInstance()
+{
+	static Broker instance;
+	return instance;
+}
+
+void Broker::Start()
+{
+	if(!running)
+	{
+		running = true;
+		brokerThread = std::thread(&Broker::ProcessMessages, this);
+	}
+}
+
+void Broker::Stop()
+{
+	if(running)
+	{
+		running = false;
+		cv.notify_all();
+		if(brokerThread.joinable())
+			brokerThread.join();
+	}
+}
+
+void Broker::Publish(const std::string &topic, std::shared_ptr<Message> message)
+{
+	{
+		std::lock_guard<std::mutex> lock(topicsMutex);
+		topics[topic].push(message);
+	}
+	cv.notify_one();
+}
+
+void Broker::Subscribe(const std::string &topic, std::shared_ptr<Subscriber> subscriber)
+{
+	std::lock_guard<std::mutex> lock(topicsMutex);
+	subscribers[topic].push_back(subscriber);
 }

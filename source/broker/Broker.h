@@ -17,6 +17,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Message.h"
 
+#include <atomic>
 #include <condition_variable>
 #include <memory>
 #include <mutex>
@@ -29,20 +30,24 @@ class Subscriber;
 class Broker
 {
 private:
-	static std::shared_ptr<Broker> instance;
-
 	std::unordered_map<std::string, std::queue<std::shared_ptr<Message>>> topics;
 	std::unordered_map<std::string, std::vector<std::shared_ptr<Subscriber>>> subscribers;
-	std::mutex mutex_;
-	std::condition_variable cond_;
+	std::mutex topicsMutex;
+	std::condition_variable cv;
+	std::atomic<bool> running;
+	std::thread brokerThread;
 
-	Broker() {}
-public:
-	Broker(Broker const &) = delete;
-	void operator=(Broker const &) = delete;
-	static std::shared_ptr<Broker> getInstance();
-	void Subscribe(const std::string &topic, std::shared_ptr<Subscriber> subscriber);
-	void Publish(const std::string &topic, std::shared_ptr<Message> message);
+	Broker() : running(false) {}
+	~Broker() { Stop(); }
+	Broker(const Broker &) = delete;
+	Broker &operator=(const Broker &) = delete;
 	void ProcessMessages();
+
+public:
+	static Broker &GetInstance();
+	void Start();
+	void Stop();
+	void Publish(const std::string &topic, std::shared_ptr<Message> message);
+	void Subscribe(const std::string &topic, std::shared_ptr<Subscriber> subscriber);
 };
 

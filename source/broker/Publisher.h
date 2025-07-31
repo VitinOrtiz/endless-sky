@@ -27,6 +27,6 @@ public:
 	Publisher() = default;
 	void Publish(const std::string &topic, std::shared_ptr<Message> message)
 	{
-		Broker::getInstance()->Publish(topic, message);
+		Broker::GetInstance().Publish(topic, message);
 	}
 };

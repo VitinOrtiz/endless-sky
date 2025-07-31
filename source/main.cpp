@@ -47,11 +47,12 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <chrono>
 #include <iostream>
 #include <map>
-
 #include <cassert>
 #include <future>
 #include <exception>
 #include <string>
+#include <thread>
+#include <memory>
 
 #ifdef _WIN32
 #define STRICT
@@ -137,6 +138,10 @@ int main(int argc, char *argv[])
 	}
 	printData = PrintData::IsPrintDataArgument(argv);
 	Files::Init(argv);
+
+	// Broker to implement pub/sub design pattern
+	Broker &broker = Broker::GetInstance();
+	broker.Start();
 
 	// Whether we are running an integration test.
 	const bool isTesting = !testToRunName.empty();
@@ -238,9 +243,6 @@ int main(int argc, char *argv[])
 		if(isTesting && !noTestMute)
 			Audio::SetVolume(0, SoundCategory::MASTER);
 
-		// Broker to implement pub/sub design pattern
-		thread t(&Broker::ProcessMessages, Broker::getInstance());
-
 		// This is the main loop where all the action begins.
 		GameLoop(player, queue, conversation, testToRunName, debugMode);
 	}
@@ -254,6 +256,7 @@ int main(int argc, char *argv[])
 		GameWindow::ExitWithError(error.what(), !isTesting);
 		return 1;
 	}
+	broker.Stop();
 
 	// Remember the window state and preferences if quitting normally.
 	Preferences::Set("maximized", GameWindow::IsMaximized());

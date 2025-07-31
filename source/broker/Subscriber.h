@@ -24,10 +24,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 class Subscriber : std::enable_shared_from_this<Subscriber>
 {
 public:
-	Subscriber() = default;
 	void Subscribe(const std::string &topic)
 	{
-		Broker::getInstance()->Subscribe(topic, shared_from_this());
+		Broker::GetInstance().Subscribe(topic, shared_from_this());
 	}
-	virtual void Receive(const std::shared_ptr<Message> message, const std::string &topic) {};
+	virtual void Receive(const std::shared_ptr<Message> message, const std::string &topic) {}
 };

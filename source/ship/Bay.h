@@ -29,11 +29,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 class Bay : Subscriber {
 public:
-	Bay(double x, double y, std::string category) : position(std::make_shared<Point>(x * .5, y * .5)), category(std::move(category)) {}
+	Bay(double x, double y, std::string category) : position(std::make_shared<Point>(x * .5, y * .5)), category(std::move(category))
+	{
+		Subscribe("Ship/Bay");                                              
+	}
 	Bay(Bay &&) = default;
 	// Copying a bay does not copy the carrier or the fighter inside it.
 	Bay(const Bay &b) : position(b.position), category(b.category), side(b.side),
-		facing(b.facing), launchEffects(b.launchEffects) {}
+		facing(b.facing), launchEffects(b.launchEffects)
+	{
+		Subscribe("Ship/Bay");
+	}
 	~Bay() = default;
 
 	Bay &operator=(Bay &&) = default;

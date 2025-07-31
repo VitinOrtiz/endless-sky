@@ -5,7 +5,7 @@ endif()
 
 if(NOT MSVC)
 	target_compile_options(EndlessSkyTests PUBLIC
-		"-Wall" "-pedantic-errors" "-Wold-style-cast" "-fno-rtti")
+		"-Wall" "-pedantic-errors" "-Wold-style-cast" "-frtti")
 endif()
 
 find_package(Catch2 CONFIG REQUIRED)
