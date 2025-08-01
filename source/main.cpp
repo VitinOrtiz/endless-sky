@@ -16,7 +16,6 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include "audio/Audio.h"
-#include "broker/Broker.h"
 #include "Command.h"
 #include "Conversation.h"
 #include "DataFile.h"
@@ -139,10 +138,6 @@ int main(int argc, char *argv[])
 	printData = PrintData::IsPrintDataArgument(argv);
 	Files::Init(argv);
 
-	// Broker to implement pub/sub design pattern
-	Broker &broker = Broker::GetInstance();
-	broker.Start();
-
 	// Whether we are running an integration test.
 	const bool isTesting = !testToRunName.empty();
 	try {
@@ -256,7 +251,6 @@ int main(int argc, char *argv[])
 		GameWindow::ExitWithError(error.what(), !isTesting);
 		return 1;
 	}
-	broker.Stop();
 
 	// Remember the window state and preferences if quitting normally.
 	Preferences::Set("maximized", GameWindow::IsMaximized());

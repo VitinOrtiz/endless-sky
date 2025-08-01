@@ -17,19 +17,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "../Angle.h"
 #include "../Effect.h"
-#include "../broker/BrokerMessage.h"
 #include "../Point.h"
 #include "Ship.h"
-#include "../broker/Subscriber.h"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-class Bay : public Subscriber {
+class Bay {
 public:
 	Bay(double x, double y, std::string category) :
-		Subscriber(), position(x * .5, y * .5), category(std::move(category)) {}
+		position(x * .5, y * .5), category(std::move(category)) {}
 	Bay(Bay &&) = default;
 	// Copying a bay does not copy the carrier or the fighter inside it.
 	Bay(const Bay &b) : position(b.position), category(b.category), side(b.side),
@@ -43,8 +41,6 @@ public:
 	static const uint8_t INSIDE = 0;
 	static const uint8_t OVER = 1;
 	static const uint8_t UNDER = 2;
-
-	void Receive(const std::shared_ptr<BrokerMessage> message, const std::string &topic) override;
 
 	void InsertLaunchEffects(int count, Effect *e)
 	{

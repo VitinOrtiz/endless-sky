@@ -16,7 +16,6 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "AI.h"
 
 #include "audio/Audio.h"
-#include "broker/Broker.h"
 #include "Command.h"
 #include "DistanceMap.h"
 #include "ship/FighterHitHelper.h"
@@ -172,11 +171,10 @@ namespace {
 
 	void Deploy(shared_ptr<Ship> ship, const bool includingDamaged)
 	{
-		string actor = ship->UUID().ToString();
-		string action = "Deploy";
-		string target = includingDamaged ? "including damaged" : "";
-		shared_ptr<BrokerMessage> msg = make_shared<BrokerMessage>(actor, action, target);
-		Broker::GetInstance().Publish("Ship", msg);
+		for(const Bay &bay : ship->Bays())
+			if(bay.fighter && (includingDamaged || bay.fighter->Health() > .75) &&
+					(!bay.fighter->IsYours() || bay.fighter->HasDeployOrder()))
+				bay.fighter->SetCommands(Command::DEPLOY);
 	}
 
 	// Helper function for selecting the ships for formation commands.

@@ -20,7 +20,6 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "ui/display/AmmoDisplay.h"
 #include "AsteroidField.h"
 #include "ui/shader/BatchDrawList.h"
-#include "broker/Broker.h"
 #include "Camera.h"
 #include "CollisionSet.h"
 #include "ui/Color.h"

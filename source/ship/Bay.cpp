@@ -17,23 +17,6 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "../Command.h"
 
-void Bay::Receive(const std::shared_ptr<BrokerMessage> message, const std::string &topic)
-{
-	if(topic == "Ship")
-	{
-		// Deploy
-		if(message->Action() == "Deploy")
-		{
-			if(carrier && carrier->UUID().ToString() == message->Actor())
-			{
-				if(message->Target() == "including damaged")
-					Deploy(true);
-				else
-					Deploy(false);
-			}
-		}
-	}
-}
 
 void Bay::Deploy(bool includingDamaged) const
 {
