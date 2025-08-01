@@ -42,15 +42,15 @@ SCENARIO( "Creating a Ship::Bay instance", "[ship][bay]" ) {
 	GIVEN( "a reference position" ) {
 		auto bay = Bay(20., 40., "Fighter");
 		THEN( "the position is scaled by 50%" ) {
-			CHECK_THAT( bay.Position()->X(), Catch::Matchers::WithinAbs(10., 0.0001));
-			CHECK_THAT( bay.Position()->Y(), Catch::Matchers::WithinAbs(20., 0.0001));
+			CHECK_THAT( bay.position.X(), Catch::Matchers::WithinAbs(10., 0.0001));
+			CHECK_THAT( bay.position.Y(), Catch::Matchers::WithinAbs(20., 0.0001));
 		}
 	}
 	GIVEN( "a category string" ) {
 		std::string value = "any string value";
 		auto bay = Bay(0., 0., value);
 		THEN( "the category is stored" ) {
-			CHECK( bay.Category() == value);
+			CHECK( bay.category == value);
 		}
 	}
 }
@@ -60,40 +60,40 @@ SCENARIO( "A Ship::Bay instance is being copied", "[ship][bay]") {
 	GIVEN( "the bay is occupied" ) {
 		auto occupant = std::make_shared<Ship>();
 		REQUIRE( occupant );
-		source.SetFighter(occupant);
-		REQUIRE( source.Fighter());
+		source.fighter = occupant;
+		REQUIRE( source.fighter);
 		WHEN( "the copy is made via ctor" ) {
 			Bay copy(source);
 			THEN( "the copy has the correct attributes" ) {
-				CHECK( copy.Position()->X() == source.Position()->X() );
-				CHECK( copy.Position()->Y() == source.Position()->Y() );
-				CHECK( copy.Category() == source.Category());
-				CHECK( copy.Side() == source.Side());
-				CHECK( copy.Facing()->Degrees() == source.Facing()->Degrees());
-				CHECK( copy.LaunchEffects() == source.LaunchEffects());
+				CHECK( copy.position.X() == source.position.X() );
+				CHECK( copy.position.Y() == source.position.Y() );
+				CHECK( copy.category == source.category);
+				CHECK( copy.side == source.side);
+				CHECK( copy.facing.Degrees() == source.facing.Degrees());
+				CHECK( copy.launchEffects == source.launchEffects);
 			}
 			THEN( "the copy is unoccupied" ) {
-				CHECK_FALSE( copy.Fighter() );
+				CHECK_FALSE( copy.fighter );
 			}
 			THEN( "the source is still occupied" ) {
-				CHECK( source.Fighter() == occupant);
+				CHECK( source.fighter == occupant);
 			}
 		}
 		WHEN( "the copy is made via assignment" ) {
 			Bay copy = source;
 			THEN( "the copy has the correct attributes" ) {
-				CHECK( copy.Position()->X() == source.Position()->X());
-				CHECK( copy.Position()->Y() == source.Position()->Y() );
-				CHECK( copy.Category() == source.Category());
-				CHECK( copy.Side() == source.Side());
-				CHECK( copy.Facing()->Degrees() == source.Facing()->Degrees());
-				CHECK( copy.LaunchEffects() == source.LaunchEffects());
+				CHECK( copy.position.X() == source.position.X());
+				CHECK( copy.position.Y() == source.position.Y() );
+				CHECK( copy.category == source.category);
+				CHECK( copy.side == source.side);
+				CHECK( copy.facing.Degrees() == source.facing.Degrees());
+				CHECK(copy.launchEffects == source.launchEffects);
 			}
 			THEN( "the copy is unoccupied" ) {
-				CHECK_FALSE( copy.Fighter() );
+				CHECK_FALSE( copy.fighter );
 			}
 			THEN( "the source is still occupied" ) {
-				CHECK( source.Fighter() == occupant);
+				CHECK( source.fighter == occupant);
 			}
 		}
 	}

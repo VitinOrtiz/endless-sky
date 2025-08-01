@@ -15,18 +15,20 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Broker.h"
 
+#include "Subscriber.h"
+
 #include <thread>
 
 void Broker::ProcessMessages()
 {
 	while(running)
-		std::shared_ptr<Message> message;
+		std::shared_ptr<BrokerMessage> message;
 	std::unique_lock<std::mutex> lock(topicsMutex);
 	{
 		cv.wait(lock, [this]() {
 			for(auto &topic : topics)
 				return !topic.second.empty() || !running;
-			});
+			return false; });
 		for(auto &topic : topics)
 		{
 			auto &topic_name = topic.first;
@@ -42,12 +44,6 @@ void Broker::ProcessMessages()
 			}
 		}
 	}
-}
-
-static Broker& Broker::GetInstance()
-{
-	static Broker instance;
-	return instance;
 }
 
 void Broker::Start()
@@ -70,7 +66,7 @@ void Broker::Stop()
 	}
 }
 
-void Broker::Publish(const std::string &topic, std::shared_ptr<Message> message)
+void Broker::Publish(const std::string &topic, std::shared_ptr<BrokerMessage> message)
 {
 	{
 		std::lock_guard<std::mutex> lock(topicsMutex);

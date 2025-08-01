@@ -15,8 +15,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "BrokerMessage.h"
+
 #include "Broker.h"
-#include "Message.h"
 
 #include <memory>
 #include <string>
@@ -24,9 +25,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 class Subscriber : std::enable_shared_from_this<Subscriber>
 {
 public:
+	virtual void Receive(const std::shared_ptr<BrokerMessage> message, const std::string &topic) {}
 	void Subscribe(const std::string &topic)
 	{
 		Broker::GetInstance().Subscribe(topic, shared_from_this());
 	}
-	virtual void Receive(const std::shared_ptr<Message> message, const std::string &topic) {}
 };

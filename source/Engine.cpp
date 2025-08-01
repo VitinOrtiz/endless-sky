@@ -1902,8 +1902,8 @@ void Engine::MoveShip(const shared_ptr<Ship> &ship)
 			eventQueue.emplace_back(nullptr, ship, ShipEvent::DESTROY);
 			// Any still-docked ships' destruction must be recorded as well.
 			for(const auto &bay : ship->Bays())
-				if(bay.Fighter())
-					eventQueue.emplace_back(nullptr, bay.Fighter(), ShipEvent::DESTROY);
+				if(bay.fighter)
+					eventQueue.emplace_back(nullptr, bay.fighter, ShipEvent::DESTROY);
 			// If this is a player ship, make sure it's no longer selected.
 			if(ship->IsYours())
 				player.DeselectShip(ship.get());
@@ -2819,8 +2819,8 @@ void Engine::DrawShipSprites(const Ship &ship)
 
 	if(hasFighters)
 		for(const Bay &bay : ship.Bays())
-			if(bay.Side() == Bay::UNDER && bay.Fighter())
-				drawObject(*bay.Fighter());
+			if(bay.side == Bay::UNDER && bay.fighter)
+				drawObject(*bay.fighter);
 
 	auto DrawEngineFlares = [&](uint8_t where)
 	{
@@ -2865,8 +2865,8 @@ void Engine::DrawShipSprites(const Ship &ship)
 
 	if(hasFighters)
 		for(const Bay &bay : ship.Bays())
-			if(bay.Side() == Bay::OVER && bay.Fighter())
-				drawObject(*bay.Fighter());
+			if(bay.side == Bay::OVER && bay.fighter)
+				drawObject(*bay.fighter);
 }
 
 

@@ -182,7 +182,11 @@ target_sources(EndlessSkyLib PRIVATE
 	"ui/panel/MenuPanel.h"
 	"ui/panel/MessageLogPanel.cpp"
 	"ui/panel/MessageLogPanel.h"
-	"broker/Message.h"
+	"broker/BrokerMessage.h"
+	"broker/Subscriber.h"
+	"broker/Broker.cpp"
+	"broker/Broker.h"
+	"broker/Publisher.h"
 	Messages.cpp
 	Messages.h
 	Minable.cpp

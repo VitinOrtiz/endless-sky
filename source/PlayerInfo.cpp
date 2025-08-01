@@ -1093,12 +1093,12 @@ map<const shared_ptr<Ship>, vector<string>> PlayerInfo::FlightCheck() const
 
 			for(auto &bay : ship->Bays())
 			{
-				++bayCount[bay.Category()];
+				++bayCount[bay.category];
 				// The bays should always be empty. But if not, count that ship too.
-				if(bay.Fighter())
+				if(bay.fighter)
 				{
 					Logger::LogError("Expected bay to be empty for " + ship->TrueModelName() + ": " + ship->Name());
-					categoryCount[bay.Fighter()->Attributes().Category()].emplace_back(bay.Fighter());
+					categoryCount[bay.fighter->Attributes().Category()].emplace_back(bay.fighter);
 				}
 			}
 		}
@@ -3641,7 +3641,7 @@ void PlayerInfo::RegisterDerivedConditions()
 		if(GetPlanet())
 			Logger::LogError("Warning: Use of \"flagship bays free\" condition while landed is unstable behavior.");
 		const vector<Bay> &bays = flagship->Bays();
-		return count_if(bays.begin(), bays.end(), [](const Bay &bay) { return !bay.Fighter(); }); });
+		return count_if(bays.begin(), bays.end(), [](const Bay &bay) { return !bay.fighter; }); });
 
 	conditions["flagship mass"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		return flagship ? flagship->Mass() : 0; });

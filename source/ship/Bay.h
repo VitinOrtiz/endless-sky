@@ -17,7 +17,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "../Angle.h"
 #include "../Effect.h"
-#include "../broker/Message.h"
+#include "../broker/BrokerMessage.h"
 #include "../Point.h"
 #include "Ship.h"
 #include "../broker/Subscriber.h"
@@ -26,20 +26,14 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-
-class Bay : Subscriber {
+class Bay : public Subscriber {
 public:
-	Bay(double x, double y, std::string category) : position(std::make_shared<Point>(x * .5, y * .5)), category(std::move(category))
-	{
-		Subscribe("Ship/Bay");                                              
-	}
+	Bay(double x, double y, std::string category) :
+		Subscriber(), position(x * .5, y * .5), category(std::move(category)) {}
 	Bay(Bay &&) = default;
 	// Copying a bay does not copy the carrier or the fighter inside it.
 	Bay(const Bay &b) : position(b.position), category(b.category), side(b.side),
-		facing(b.facing), launchEffects(b.launchEffects)
-	{
-		Subscribe("Ship/Bay");
-	}
+		facing(b.facing), launchEffects(b.launchEffects) {}
 	~Bay() = default;
 
 	Bay &operator=(Bay &&) = default;
@@ -50,27 +44,8 @@ public:
 	static const uint8_t OVER = 1;
 	static const uint8_t UNDER = 2;
 
-	void Receive(const std::shared_ptr<Message> message, const std::string &topic) override;
+	void Receive(const std::shared_ptr<BrokerMessage> message, const std::string &topic) override;
 
-	std::shared_ptr<Point> Position() const { return position; }
-	void SetPosition(std::shared_ptr<Point> position) { this->position = position; }
-
-	std::shared_ptr<Ship> Carrier() const { return carrier; }
-	void SetCarrier(std::shared_ptr<Ship> carrier) { this->carrier = carrier; }
-
-	std::shared_ptr<Ship> Fighter() const { return fighter; }
-	void SetFighter(std::shared_ptr<Ship> fighter) { this->fighter = fighter; }
-
-	std::string Category() const { return category; }
-	void SetCategory(std::string &category) { this->category = category; }
-
-	uint8_t Side() const { return side; }
-	void SetSide(uint8_t side) { this->side = side; }
-
-	std::shared_ptr<Angle> Facing() const { return facing; }
-	void SetFacing(std::shared_ptr<Angle> facing) { this->facing = facing; }
-
-	std::vector<Effect *> LaunchEffects() const { return launchEffects; }
 	void InsertLaunchEffects(int count, Effect *e)
 	{
 		launchEffects.insert(launchEffects.end(), count, e);
@@ -80,9 +55,8 @@ public:
 		launchEffects.emplace_back(e);
 	}
 	void Deploy(bool includingDamaged) const;
-	bool HasDeployOrders() const;
-private:
-	std::shared_ptr<Point> position;
+
+	Point position;
 	// Master ship
 	std::shared_ptr<Ship> carrier;
 	// Slave ship
@@ -92,7 +66,7 @@ private:
 	uint8_t side = Bay::INSIDE;
 
 	// The angle at which the fighter ship will depart, relative to the carrying ship.
-	std::shared_ptr<Angle> facing;
+	Angle facing;
 
 	// The launch effect(s) to be simultaneously played when the bay's ship launches.
 	std::vector<Effect *> launchEffects;

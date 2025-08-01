@@ -395,15 +395,15 @@ void MainPanel::ShowScanDialog(const ShipEvent &event)
 
 		map<string, int> count;
 		for(const Bay &bay : target->Bays())
-			if(bay.Fighter())
+			if(bay.fighter)
 			{
-				int &value = count[bay.Fighter()->DisplayModelName()];
+				int &value = count[bay.fighter->DisplayModelName()];
 				if(value)
 				{
 					// If the name and the plural name are the same string, just
 					// update the count. Otherwise, clear the count for the
 					// singular name and set it for the plural.
-					int &pluralValue = count[bay.Fighter()->PluralModelName()];
+					int &pluralValue = count[bay.fighter->PluralModelName()];
 					if(!pluralValue)
 					{
 						value = -1;

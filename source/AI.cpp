@@ -30,7 +30,6 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "ship/Hardpoint.h"
 #include "ship/JumpType.h"
 #include "image/Mask.h"
-#include "broker/Message.h"
 #include "Messages.h"
 #include "Minable.h"
 #include "pi.h"
@@ -174,11 +173,10 @@ namespace {
 	void Deploy(shared_ptr<Ship> ship, const bool includingDamaged)
 	{
 		string actor = ship->UUID().ToString();
-		string predicate = includingDamaged ? " including damaged" : "";
-		string action = "deploy" + predicate;
-		string target = "";
-		shared_ptr<Message> msg = make_shared<Message>(actor, action, target);
-		Broker::GetInstance().Publish("Ship/Bay", msg);
+		string action = "Deploy";
+		string target = includingDamaged ? "including damaged" : "";
+		shared_ptr<BrokerMessage> msg = make_shared<BrokerMessage>(actor, action, target);
+		Broker::GetInstance().Publish("Ship", msg);
 	}
 
 	// Helper function for selecting the ships for formation commands.
@@ -264,7 +262,7 @@ namespace {
 	bool HasDeployments(const Ship &ship)
 	{
 		for (const Bay &bay : ship.Bays())
-			if(bay.Fighter() && bay.Fighter()->HasDeployOrder())
+			if(bay.fighter && bay.fighter->HasDeployOrder())
 				return true;
 		return false;
 	}

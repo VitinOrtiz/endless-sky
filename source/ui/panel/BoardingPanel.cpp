@@ -441,10 +441,10 @@ bool BoardingPanel::KeyDown(SDL_Keycode key, Uint16 mod, const Command &command,
 					you->TransferFuel(victim->JumpFuelMissing(), &*victim);
 				player.AddShip(victim);
 				for(const Bay &bay : victim->Bays())
-					if(bay.Fighter())
+					if(bay.fighter)
 					{
-						player.AddShip(bay.Fighter());
-						player.HandleEvent(ShipEvent(you, bay.Fighter(), ShipEvent::CAPTURE), GetUI());
+						player.AddShip(bay.fighter);
+						player.HandleEvent(ShipEvent(you, bay.fighter, ShipEvent::CAPTURE), GetUI());
 					}
 				isCapturing = false;
 

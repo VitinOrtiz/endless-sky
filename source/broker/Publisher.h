@@ -15,8 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Broker.h"
-#include "Message.h"
+#include "BrokerMessage.h"
 
 #include <memory>
 #include <string>
@@ -24,9 +23,5 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 class Publisher
 {
 public:
-	Publisher() = default;
-	void Publish(const std::string &topic, std::shared_ptr<Message> message)
-	{
-		Broker::GetInstance().Publish(topic, message);
-	}
+	virtual void Publish(const std::string &topic, std::shared_ptr<BrokerMessage> message);
 };

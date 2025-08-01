@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "Message.h"
+#include "BrokerMessage.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -30,7 +30,7 @@ class Subscriber;
 class Broker
 {
 private:
-	std::unordered_map<std::string, std::queue<std::shared_ptr<Message>>> topics;
+	std::unordered_map<std::string, std::queue<std::shared_ptr<BrokerMessage>>> topics;
 	std::unordered_map<std::string, std::vector<std::shared_ptr<Subscriber>>> subscribers;
 	std::mutex topicsMutex;
 	std::condition_variable cv;
@@ -44,10 +44,14 @@ private:
 	void ProcessMessages();
 
 public:
-	static Broker &GetInstance();
+	static Broker &GetInstance()
+	{
+		static Broker instance;
+		return instance;
+	}	
 	void Start();
 	void Stop();
-	void Publish(const std::string &topic, std::shared_ptr<Message> message);
+	void Publish(const std::string &topic, std::shared_ptr<BrokerMessage> message);
 	void Subscribe(const std::string &topic, std::shared_ptr<Subscriber> subscriber);
 };
 

@@ -757,8 +757,8 @@ void Planet::DeployDefense(list<shared_ptr<Ship>> &ships) const
 		(**it).SetPersonality(defenderPersonality);
 		if((**it).HasBays())
 			for(auto bay = (**it).Bays().begin(); bay != (**it).Bays().end(); ++bay)
-				if(bay->Fighter())
-					bay->Fighter()->SetPersonality(fighterPersonality);
+				if(bay->fighter)
+					bay->fighter->SetPersonality(fighterPersonality);
 	}
 
 	++defenseDeployed;

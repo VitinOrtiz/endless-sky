@@ -17,18 +17,16 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "../Command.h"
 
-
-
-void Bay::Receive(const std::shared_ptr<Message> message, const std::string &topic) 
+void Bay::Receive(const std::shared_ptr<BrokerMessage> message, const std::string &topic)
 {
-	if(topic == "Ship/Bay")
+	if(topic == "Ship")
 	{
 		// Deploy
-		if(message->Action().substr(0, 6) == "deploy")
+		if(message->Action() == "Deploy")
 		{
 			if(carrier && carrier->UUID().ToString() == message->Actor())
 			{
-				if(message->Action() == "deploy including damaged")
+				if(message->Target() == "including damaged")
 					Deploy(true);
 				else
 					Deploy(false);
@@ -37,12 +35,9 @@ void Bay::Receive(const std::shared_ptr<Message> message, const std::string &top
 	}
 }
 
-
-
 void Bay::Deploy(bool includingDamaged) const
 {
-	if(Fighter() && (includingDamaged || Fighter()->Health() > .75) &&
-		(!Fighter()->IsYours() || Fighter()->HasDeployOrder()))
-		Fighter()->SetCommands(Command::DEPLOY);
+	if(fighter && (includingDamaged || fighter->Health() > .75) &&
+		(!fighter->IsYours() || fighter->HasDeployOrder()))
+		fighter->SetCommands(Command::DEPLOY);
 }
-

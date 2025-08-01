@@ -1,4 +1,4 @@
-/* Message.h
+/* BrokerMessage.h
 Copyright (c) 2016 by Michael Zahniser
 
 Endless Sky is free software: you can redistribute it and/or modify it under the
@@ -17,7 +17,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include <string>
 
-class Message
+class BrokerMessage
 {
 private:
 	std::string actor;
@@ -25,8 +25,8 @@ private:
 	std::string target;
 
 public:
-	Message(Message &msg) = default;
-	Message(std::string &actor, std::string &action, std::string &target) :
+	BrokerMessage(BrokerMessage &msg) = default;
+	BrokerMessage(std::string &actor, std::string &action, std::string &target) :
 		actor(std::move(actor)), action(std::move(action)), target(std::move(target)) { }
 
 	std::string Actor() const { return actor; }
