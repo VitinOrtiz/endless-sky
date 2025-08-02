@@ -16,15 +16,15 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Planet.h"
 
 #include "DataNode.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
 #include "PlayerInfo.h"
 #include "Politics.h"
 #include "Random.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 #include "image/SpriteSet.h"
 #include "System.h"
 #include "Wormhole.h"
@@ -757,8 +757,8 @@ void Planet::DeployDefense(list<shared_ptr<Ship>> &ships) const
 		(**it).SetPersonality(defenderPersonality);
 		if((**it).HasBays())
 			for(auto bay = (**it).Bays().begin(); bay != (**it).Bays().end(); ++bay)
-				if(bay->fighter)
-					bay->fighter->SetPersonality(fighterPersonality);
+				if(bay->Fighter())
+					bay->Fighter()->SetPersonality(fighterPersonality);
 	}
 
 	++defenseDeployed;

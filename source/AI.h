@@ -16,9 +16,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
 #include "Command.h"
-#include "ship/FireCommand.h"
-#include "ship/FormationPositioner.h"
+#include "FireCommand.h"
+#include "FormationPositioner.h"
 #include "Point.h"
+#include "net/Broker.h"
+#include "net/Publisher.h"
 
 #include <cstdint>
 #include <list>
@@ -35,6 +37,7 @@ class Flotsam;
 class Government;
 class Minable;
 class PlayerInfo;
+class Publisher;
 class Ship;
 class ShipEvent;
 class StellarObject;
@@ -48,14 +51,15 @@ class System;
 // or hyperspace travel between systems. The AI also tracks which actions
 // ships have performed, to avoid having the same ship try to scan or board
 // the same target over and over.
-class AI {
+class AI : Publisher {
 public:
 	// Any object that can be a ship's target is in a list of this type:
 template <class Type>
 	using List = std::list<std::shared_ptr<Type>>;
 	// Constructor, giving the AI access to the player and various object lists.
 	AI(const PlayerInfo &player, const List<Ship> &ships,
-			const List<Minable> &minables, const List<Flotsam> &flotsam);
+		const List<Minable> &minables, const List<Flotsam> &flotsam,
+		Broker &broker);
 
 	// Fleet commands from the player.
 	void IssueFormationChange(PlayerInfo &player);
@@ -181,6 +185,10 @@ private:
 	void UpdateStrengths(std::map<const Government *, int64_t> &strength, const System *playerSystem);
 	void CacheShipLists();
 
+	static void Deploy(const Ship &ship, bool includingDamaged);
+	// Check if the ship contains a carried ship that needs to launch.
+	bool HasDeployOrders(const Ship &ship);
+
 
 private:
 	class Orders {
@@ -219,6 +227,8 @@ private:
 
 
 private:
+	Broker *broker;
+
 	// TODO: Figure out a way to remove the player dependency.
 	const PlayerInfo &player;
 	// Data from the game engine.

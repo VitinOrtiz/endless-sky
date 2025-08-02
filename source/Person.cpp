@@ -16,10 +16,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Person.h"
 
 #include "DataNode.h"
-#include "ship/FormationPattern.h"
+#include "FormationPattern.h"
 #include "GameData.h"
 #include "Government.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "System.h"
 
 using namespace std;

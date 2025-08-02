@@ -15,65 +15,65 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Engine.h"
 
-#include "ui/label/AlertLabel.h"
+#include "AlertLabel.h"
 #include "audio/Audio.h"
 #include "CategoryList.h"
 #include "CategoryType.h"
 #include "Collision.h"
 #include "CollisionType.h"
 #include "CoreStartData.h"
-#include "ship/DamageDealt.h"
-#include "ship/DamageProfile.h"
+#include "DamageDealt.h"
+#include "DamageProfile.h"
 #include "Effect.h"
-#include "ship/FighterHitHelper.h"
-#include "ui/shader/FillShader.h"
-#include "ship/Fleet.h"
+#include "FighterHitHelper.h"
+#include "shader/FillShader.h"
+#include "Fleet.h"
 #include "Flotsam.h"
-#include "ui/text/Font.h"
-#include "ui/text/FontSet.h"
-#include "ui/text/Format.h"
+#include "text/Font.h"
+#include "text/FontSet.h"
+#include "text/Format.h"
 #include "FrameTimer.h"
 #include "GameData.h"
 #include "Gamerules.h"
 #include "Government.h"
 #include "Hazard.h"
-#include "ui/Interface.h"
+#include "Interface.h"
 #include "Logger.h"
-#include "ui/panel/MapPanel.h"
+#include "MapPanel.h"
 #include "image/Mask.h"
 #include "Messages.h"
 #include "Minable.h"
 #include "MinableDamageDealt.h"
 #include "Mission.h"
 #include "NPC.h"
-#include "ui/shader/OutlineShader.h"
+#include "shader/OutlineShader.h"
 #include "Person.h"
 #include "Planet.h"
-#include "ui/label/PlanetLabel.h"
+#include "PlanetLabel.h"
 #include "PlayerInfo.h"
-#include "ui/shader/PointerShader.h"
-#include "ui/Preferences.h"
+#include "shader/PointerShader.h"
+#include "Preferences.h"
 #include "Projectile.h"
 #include "Random.h"
-#include "ui/shader/RingShader.h"
-#include "ui/Screen.h"
-#include "ship/Ship.h"
+#include "shader/RingShader.h"
+#include "Screen.h"
+#include "Ship.h"
 #include "ship/ShipAICache.h"
-#include "ship/ShipEvent.h"
-#include "ship/ShipJumpNavigation.h"
+#include "ShipEvent.h"
+#include "ShipJumpNavigation.h"
 #include "image/Sprite.h"
 #include "image/SpriteSet.h"
-#include "ui/shader/SpriteShader.h"
-#include "ui/shader/StarField.h"
+#include "shader/SpriteShader.h"
+#include "shader/StarField.h"
 #include "StellarObject.h"
 #include "System.h"
 #include "SystemEntry.h"
 #include "test/Test.h"
-#include "ui/UI.h"
+#include "UI.h"
 #include "Visual.h"
 #include "Weather.h"
 #include "Wormhole.h"
-#include "ui/text/WrappedText.h"
+#include "text/WrappedText.h"
 
 #include <algorithm>
 #include <cmath>
@@ -145,7 +145,7 @@ namespace {
 		return FlareCurve(ship.ThrustHeldFraction(kind)) * ship.Zoom();
 	}
 
-	void DrawFlareSprites(const Ship &ship, DrawList &draw, const vector<Ship::EnginePoint> &enginePoints,
+	void DrawFlareSprites(const Ship &ship, DrawList &draw, const vector<EnginePoint> &enginePoints,
 		const vector<pair<Body, int>> &flareSprites, uint8_t side, bool reverse)
 	{
 		Point thrustScale = ScaledFlareCurve(ship, reverse ? Ship::ThrustKind::REVERSE : Ship::ThrustKind::FORWARD);
@@ -155,10 +155,10 @@ namespace {
 		double gimbalDirection = (ship.Commands().Has(Command::FORWARD) || ship.Commands().Has(Command::BACK))
 			* -ship.Commands().Turn();
 
-		for(const Ship::EnginePoint &point : enginePoints)
+		for(const EnginePoint &point : enginePoints)
 		{
-			Angle gimbal = Angle(gimbalDirection * point.gimbal.Degrees());
-			Angle flareAngle = ship.Facing() + point.facing + gimbal;
+			Angle gimbal = Angle(gimbalDirection * point.Gimbal().Degrees());
+			Angle flareAngle = ship.Facing() + point.Facing() + gimbal;
 			Point pos = ship.Facing().Rotate(point) * ship.Zoom() + ship.Position();
 			auto DrawFlares = [&draw, &pos, &ship, &flareAngle, &point](const pair<Body, int> &it, const Point &scale)
 			{
@@ -166,18 +166,18 @@ namespace {
 				// three copies of the flare sprite.
 				for(int i = 0; i < it.second && i < 3; ++i)
 				{
-					Body sprite(it.first, pos, ship.Velocity(), flareAngle, point.zoom, scale);
+					Body sprite(it.first, pos, ship.Velocity(), flareAngle, point.Zoom(), scale);
 					draw.Add(sprite, ship.Cloaking());
 				}
 			};
 			for(const auto &it : flareSprites)
 				if(point.side == side)
 				{
-					if(point.steering == Ship::EnginePoint::NONE)
+					if(point.steering == EnginePoint::NONE)
 						DrawFlares(it, thrustScale);
-					else if(point.steering == Ship::EnginePoint::LEFT && leftTurnScale)
+					else if(point.steering == EnginePoint::LEFT && leftTurnScale)
 						DrawFlares(it, leftTurnScale);
-					else if(point.steering == Ship::EnginePoint::RIGHT && rightTurnScale)
+					else if(point.steering == EnginePoint::RIGHT && rightTurnScale)
 						DrawFlares(it, rightTurnScale);
 				}
 		}
@@ -442,7 +442,7 @@ void Engine::Place(const list<NPC> &npcs, const shared_ptr<Ship> &flagship)
 
 			// Avoid the exploit where the player can wear down an NPC's
 			// crew by attrition over the course of many days.
-			ship->AddCrew(max(0, ship->RequiredCrew() - ship->Crew()));
+			ship->GetCrew().Add(max<int>(0, ship->GetCrew().RequiredCrew() - ship->GetCrew().Members()));
 			if(!ship->IsDisabled())
 				ship->Recharge();
 
@@ -915,7 +915,7 @@ void Engine::Step(bool isActive)
 			bool scrutable = !target->Attributes().Get("inscrutable");
 			if((targetRange <= crewScanRange && scrutable) || (crewScanRange && target->IsYours()))
 			{
-				info.SetString("target crew", to_string(target->Crew()));
+				info.SetString("target crew", to_string(target->GetCrew().Members()));
 				if(accelerationScanRange || velocityScanRange)
 					info.SetCondition("mobility crew display");
 				else
@@ -1902,8 +1902,8 @@ void Engine::MoveShip(const shared_ptr<Ship> &ship)
 			eventQueue.emplace_back(nullptr, ship, ShipEvent::DESTROY);
 			// Any still-docked ships' destruction must be recorded as well.
 			for(const auto &bay : ship->Bays())
-				if(bay.fighter)
-					eventQueue.emplace_back(nullptr, bay.fighter, ShipEvent::DESTROY);
+				if(bay.Fighter())
+					eventQueue.emplace_back(nullptr, bay.Fighter()->shared_from_this(), ShipEvent::DESTROY);
 			// If this is a player ship, make sure it's no longer selected.
 			if(ship->IsYours())
 				player.DeselectShip(ship.get());
@@ -2802,7 +2802,6 @@ void Engine::FillRadar()
 // and engine flares and any fighters it is carrying externally.
 void Engine::DrawShipSprites(const Ship &ship)
 {
-	bool hasFighters = ship.PositionFighters();
 	double cloak = ship.Cloaking();
 	bool drawCloaked = (cloak && ship.IsYours());
 	bool fancyCloak = Preferences::Has("Cloaked ship outlines");
@@ -2817,11 +2816,13 @@ void Engine::DrawShipSprites(const Ship &ship)
 		itemsToDraw.Add(body, cloak);
 	};
 
-	if(hasFighters)
-		for(const Bay &bay : ship.Bays())
-			if(bay.side == Bay::UNDER && bay.fighter)
-				drawObject(*bay.fighter);
-
+	for(const Bay &bay : ship.Bays())
+	{
+		bool hasFighters = bay.PositionFighter();
+		if(hasFighters)
+			if(bay.Side() == Bay::UNDER && bay.Fighter())
+				drawObject(*bay.Fighter());
+	}
 	auto DrawEngineFlares = [&](uint8_t where)
 	{
 		if(ship.ThrustHeldFrames(Ship::ThrustKind::FORWARD) && !ship.EnginePoints().empty())
@@ -2835,7 +2836,7 @@ void Engine::DrawShipSprites(const Ship &ship)
 			DrawFlareSprites(ship, draw[currentCalcBuffer], ship.SteeringEnginePoints(),
 				ship.Attributes().SteeringFlareSprites(), where, false);
 	};
-	DrawEngineFlares(Ship::EnginePoint::UNDER);
+	DrawEngineFlares(EnginePoint::UNDER);
 
 	auto drawHardpoint = [&drawObject, &ship](const Hardpoint &hardpoint) -> void
 	{
@@ -2861,12 +2862,15 @@ void Engine::DrawShipSprites(const Ship &ship)
 		if(!hardpoint.IsUnder())
 			drawHardpoint(hardpoint);
 
-	DrawEngineFlares(Ship::EnginePoint::OVER);
+	DrawEngineFlares(EnginePoint::OVER);
 
-	if(hasFighters)
-		for(const Bay &bay : ship.Bays())
-			if(bay.side == Bay::OVER && bay.fighter)
-				drawObject(*bay.fighter);
+	for(const Bay &bay : ship.Bays())
+	{
+		bool hasFighter = bay.PositionFighter();
+		if(hasFighter)
+			if(bay.Side() == Bay::OVER && bay.Fighter())
+				drawObject(*bay.Fighter());
+	}
 }
 
 

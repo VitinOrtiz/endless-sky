@@ -18,9 +18,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Angle.h"
 #include "Effect.h"
 #include "GameData.h"
-#include "ship/Outfit.h"
+#include "Outfit.h"
 #include "Random.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "image/SpriteSet.h"
 #include "Visual.h"
 
@@ -73,7 +73,7 @@ void Flotsam::Place(const Ship &source, size_t bayIndex)
 {
 	Place(source);
 	if(source.Bays().size() > bayIndex)
-		position += source.Facing().Rotate(source.Bays()[bayIndex].position);
+		position += source.Facing().Rotate(source.Bays()[bayIndex].Position());
 }
 
 

@@ -34,8 +34,6 @@ class Sound;
 // template provided by an Effect.
 class Effect : public Body {
 public:
-	Effect() = default;
-	Effect(Effect &&) = default;
 	// Functions provided by the Body base class:
 	// Frame GetFrame(int step = -1) const;
 	// const Point &Position() const;

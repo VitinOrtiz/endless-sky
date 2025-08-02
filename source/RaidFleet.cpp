@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "RaidFleet.h"
 
 #include "DataNode.h"
-#include "ship/Fleet.h"
+#include "Fleet.h"
 #include "GameData.h"
 
 #include <algorithm>

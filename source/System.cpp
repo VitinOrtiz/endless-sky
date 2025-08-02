@@ -18,7 +18,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Angle.h"
 #include "DataNode.h"
 #include "Date.h"
-#include "ship/Fleet.h"
+#include "Fleet.h"
 #include "GameData.h"
 #include "Gamerules.h"
 #include "Government.h"

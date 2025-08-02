@@ -17,13 +17,13 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Conversation.h"
 #include "DataNode.h"
-#include "ship/Fleet.h"
+#include "Fleet.h"
 #include "GameData.h"
-#include "ship/Outfit.h"
+#include "Outfit.h"
 #include "Phrase.h"
 #include "Politics.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 
 #include <algorithm>
 #include <cmath>

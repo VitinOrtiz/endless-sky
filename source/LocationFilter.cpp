@@ -25,7 +25,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Planet.h"
 #include "Port.h"
 #include "Random.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "StellarObject.h"
 #include "System.h"
 

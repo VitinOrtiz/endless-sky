@@ -63,6 +63,7 @@ public:
 	const Angle &Facing() const;
 	Point Unit() const;
 	double Zoom() const;
+	void SetZoom(const double zoom);
 	Point Scale() const;
 
 	// Check if this object is marked for removal from the game.
@@ -86,16 +87,17 @@ public:
 	double DistanceAlpha(const Point &drawCenter) const;
 	bool IsVisible(const Point &drawCenter) const;
 
-
+	// Mark this object to be removed from the game.
+	void MarkForRemoval();
+	// Mark that this object should not be removed (e.g. a launched fighter).
+	void UnmarkForRemoval();
+	Angle GetAngle() const { return angle; }
+	void SetAngle(const Angle &angle);
 protected:
 	// Adjust the frame rate.
 	void SetFrameRate(float framesPerSecond);
 	void AddFrameRate(float framesPerSecond);
 	void PauseAnimation();
-	// Mark this object to be removed from the game.
-	void MarkForRemoval();
-	// Mark that this object should not be removed (e.g. a launched fighter).
-	void UnmarkForRemoval();
 	// Turn this object around its center of rotation.
 	void Turn(double amount);
 	void Turn(const Angle &amount);

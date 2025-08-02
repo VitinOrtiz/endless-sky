@@ -16,7 +16,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Phrase.h"
 
 #include "DataNode.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 
 using namespace std;

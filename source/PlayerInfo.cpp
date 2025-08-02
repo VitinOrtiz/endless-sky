@@ -17,33 +17,33 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "AI.h"
 #include "audio/Audio.h"
-#include "ui/panel/ConversationPanel.h"
+#include "ConversationPanel.h"
 #include "DataFile.h"
 #include "DataWriter.h"
-#include "ui/Dialog.h"
+#include "Dialog.h"
 #include "DistanceMap.h"
 #include "Files.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
 #include "Messages.h"
-#include "ship/Outfit.h"
+#include "Outfit.h"
 #include "Person.h"
 #include "Planet.h"
 #include "Plugins.h"
 #include "Politics.h"
 #include "Port.h"
-#include "ui/Preferences.h"
+#include "Preferences.h"
 #include "RaidFleet.h"
 #include "Random.h"
 #include "SavedGame.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 #include "StartConditions.h"
 #include "StellarObject.h"
 #include "System.h"
-#include "ui/UI.h"
+#include "UI.h"
 
 #include <algorithm>
 #include <cassert>
@@ -187,7 +187,7 @@ void PlayerInfo::New(const StartConditions &start)
 	// Copy any ships in the start conditions.
 	for(const Ship &ship : start.Ships())
 	{
-		ships.emplace_back(make_shared<Ship>(move(ship)));
+		ships.emplace_back(new Ship(ship));
 		ships.back()->SetSystem(&start.GetSystem());
 		ships.back()->SetPlanet(&start.GetPlanet());
 		ships.back()->SetIsSpecial();
@@ -924,12 +924,12 @@ int64_t PlayerInfo::Salaries() const
 	int64_t crew = 0;
 	const Ship *flagship = Flagship();
 	if(flagship)
-		crew = flagship->Crew() - flagship->RequiredCrew();
+		crew = flagship->GetCrew().Members() - flagship->GetCrew().RequiredCrew();
 
 	// A ship that is "parked" remains on a planet and requires no salaries.
 	for(const shared_ptr<Ship> &ship : ships)
 		if(!ship->IsParked() && !ship->IsDestroyed())
-			crew += ship->RequiredCrew();
+			crew += ship->GetCrew().RequiredCrew();
 	if(!crew)
 		return 0;
 
@@ -1093,12 +1093,12 @@ map<const shared_ptr<Ship>, vector<string>> PlayerInfo::FlightCheck() const
 
 			for(auto &bay : ship->Bays())
 			{
-				++bayCount[bay.category];
+				++bayCount[bay.Category()];
 				// The bays should always be empty. But if not, count that ship too.
-				if(bay.fighter)
+				if(bay.Fighter())
 				{
 					Logger::LogError("Expected bay to be empty for " + ship->TrueModelName() + ": " + ship->Name());
-					categoryCount[bay.fighter->Attributes().Category()].emplace_back(bay.fighter);
+					categoryCount[bay.Fighter()->Attributes().Category()].emplace_back(bay.Fighter());
 				}
 			}
 		}
@@ -1483,7 +1483,7 @@ void PlayerInfo::UpdateCargoCapacities()
 		if(ship->GetPlanet() == planet && !ship->IsParked())
 		{
 			size += ship->Attributes().Get("cargo space");
-			int crew = (ship == flagship ? ship->Crew() : ship->RequiredCrew());
+			int crew = (ship == flagship ? ship->GetCrew().Members() : ship->GetCrew().RequiredCrew());
 			bunks += ship->Attributes().Get("bunks") - crew;
 		}
 	cargo.SetSize(size);
@@ -1626,10 +1626,10 @@ void PlayerInfo::Land(UI *ui)
 	if(Preferences::Has("Rehire extra crew when lost")
 			&& (planet->GetPort().HasService(Port::ServicesType::HireCrew) && canUseServices) && flagship)
 	{
-		int added = desiredCrew - flagship->Crew();
+		int added = desiredCrew - flagship->GetCrew().Members();
 		if(added > 0)
 		{
-			flagship->AddCrew(added);
+			flagship->GetCrew().Add(added);
 			Messages::Add("You hire " + to_string(added) + (added == 1
 					? " extra crew member to fill your now-empty bunk."
 					: " extra crew members to fill your now-empty bunks."), Messages::Importance::High);
@@ -1695,30 +1695,30 @@ bool PlayerInfo::TakeOff(UI *ui, const bool distributeCargo)
 
 	if(cargo.Passengers())
 	{
-		int extra = min(cargo.Passengers(), flagship->Crew() - flagship->RequiredCrew());
+		int extra = min<int>(cargo.Passengers(), flagship->GetCrew().Members() - flagship->GetCrew().RequiredCrew());
 		if(extra)
 		{
-			flagship->AddCrew(-extra);
+			flagship->GetCrew().Add(-extra);
 			if(extra == 1)
 				Messages::Add("You fired a crew member to free up a bunk for a passenger.", Messages::Importance::High);
 			else
 				Messages::Add("You fired " + to_string(extra) + " crew members to free up bunks for passengers.",
 						Messages::Importance::High);
-			flagship->Cargo().SetBunks(flagship->Attributes().Get("bunks") - flagship->Crew());
+			flagship->Cargo().SetBunks(flagship->Attributes().Get("bunks") - flagship->GetCrew().Members());
 			cargo.TransferAll(flagship->Cargo());
 		}
 	}
 
-	int extra = flagship->Crew() + flagship->Cargo().Passengers() - flagship->Attributes().Get("bunks");
+	int extra = flagship->GetCrew().Members() + flagship->Cargo().Passengers() - flagship->Attributes().Get("bunks");
 	if(extra > 0)
 	{
-		flagship->AddCrew(-extra);
+		flagship->GetCrew().Add(-extra);
 		if(extra == 1)
 			Messages::Add("You fired a crew member because you have no bunk for them.", Messages::Importance::High);
 		else
 			Messages::Add("You fired " + to_string(extra) + " crew members because you have no bunks for them.",
 					Messages::Importance::High);
-		flagship->Cargo().SetBunks(flagship->Attributes().Get("bunks") - flagship->Crew());
+		flagship->Cargo().SetBunks(flagship->Attributes().Get("bunks") - flagship->GetCrew().Members());
 	}
 
 	// For each active, carriable ship you own, try to find an active ship that has a bay for it.
@@ -1895,13 +1895,13 @@ const CargoHold &PlayerInfo::DistributeCargo()
 		{
 			if(ship != flagship)
 			{
-				ship->Cargo().SetBunks(ship->Attributes().Get("bunks") - ship->RequiredCrew());
+				ship->Cargo().SetBunks(ship->Attributes().Get("bunks") - ship->GetCrew().RequiredCrew());
 				cargo.TransferAll(ship->Cargo());
 			}
 			else
 			{
 				// Your flagship takes first priority for passengers but last for cargo.
-				desiredCrew = ship->Crew();
+				desiredCrew = ship->GetCrew().Members();
 				ship->Cargo().SetBunks(ship->Attributes().Get("bunks") - desiredCrew);
 				for(const auto &it : cargo.PassengerList())
 					cargo.TransferPassengers(it.first, it.second, ship->Cargo());
@@ -3587,9 +3587,9 @@ void PlayerInfo::RegisterDerivedConditions()
 
 	// Read-only flagship conditions.
 	conditions["flagship crew"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
-		return flagship ? flagship->Crew() : 0; });
+		return flagship ? flagship->GetCrew().Members() : 0; });
 	conditions["flagship required crew"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
-		return flagship ? flagship->RequiredCrew() : 0; });
+		return flagship ? flagship->GetCrew().RequiredCrew() : 0; });
 	conditions["flagship bunks"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		return flagship ? flagship->Attributes().Get("bunks") : 0; });
 	conditions["flagship model: "].ProvidePrefixed([this](const ConditionEntry &ce) -> bool {
@@ -3641,7 +3641,7 @@ void PlayerInfo::RegisterDerivedConditions()
 		if(GetPlanet())
 			Logger::LogError("Warning: Use of \"flagship bays free\" condition while landed is unstable behavior.");
 		const vector<Bay> &bays = flagship->Bays();
-		return count_if(bays.begin(), bays.end(), [](const Bay &bay) { return !bay.fighter; }); });
+		return count_if(bays.begin(), bays.end(), [](const Bay &bay) { return !bay.Fighter(); }); });
 
 	conditions["flagship mass"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		return flagship ? flagship->Mass() : 0; });
@@ -3779,7 +3779,7 @@ void PlayerInfo::RegisterDerivedConditions()
 		int64_t retVal = 0;
 		for(const shared_ptr<Ship> &ship : ships)
 			if(!ship->IsParked() && !ship->IsDisabled() && ship->GetActualSystem() == system)
-				retVal += ship->Attributes().Get("bunks") - ship->RequiredCrew();
+				retVal += ship->Attributes().Get("bunks") - ship->GetCrew().RequiredCrew();
 		return retVal; });
 	conditions["cargo space free"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		int64_t retVal = 0;
@@ -3801,7 +3801,7 @@ void PlayerInfo::RegisterDerivedConditions()
 	conditions["flagship: passenger space"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		if(!flagship)
 			return 0;
-		return flagship->Attributes().Get("bunks") - flagship->RequiredCrew(); });
+		return flagship->Attributes().Get("bunks") - flagship->GetCrew().RequiredCrew(); });
 	conditions["flagship: cargo space free"].ProvideNamed([this](const ConditionEntry &ce) -> int64_t {
 		if(!flagship)
 			return 0;

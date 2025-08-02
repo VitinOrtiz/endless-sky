@@ -15,21 +15,21 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "NPC.h"
 
-#include "ui/panel/ConversationPanel.h"
+#include "ConversationPanel.h"
 #include "DataNode.h"
 #include "DataWriter.h"
-#include "ui/Dialog.h"
-#include "ui/text/Format.h"
+#include "Dialog.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
 #include "Messages.h"
 #include "Planet.h"
 #include "PlayerInfo.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 #include "System.h"
-#include "ui/UI.h"
+#include "UI.h"
 
 #include <algorithm>
 #include <vector>
@@ -511,8 +511,8 @@ void NPC::Do(const ShipEvent &event, PlayerInfo &player, UI *ui, const Mission *
 	// Apply this event to the ship and any ships it is carrying.
 	shipEvents[ship.get()] |= type;
 	for(const Bay &bay : ship->Bays())
-		if(bay.fighter)
-			shipEvents[bay.fighter.get()] |= type;
+		if(bay.Fighter())
+			shipEvents[bay.Fighter()] |= type;
 
 	// Run any mission actions that trigger on this event.
 	DoActions(event, newEvent, player, ui, caller);

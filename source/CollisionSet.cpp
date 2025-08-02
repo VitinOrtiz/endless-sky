@@ -22,7 +22,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "image/Mask.h"
 #include "Point.h"
 #include "Projectile.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 
 #include <algorithm>
 #include <cstdlib>

@@ -21,11 +21,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "GameData.h"
 #include "GameEvent.h"
 #include "LocationFilter.h"
-#include "ship/Outfit.h"
+#include "Outfit.h"
 #include "Planet.h"
 #include "PlayerInfo.h"
 #include "Port.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "Shop.h"
 #include "System.h"
 

@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Swizzle.h"
 
-#include "ui/Color.h"
+#include "Color.h"
 #include "DataNode.h"
 
 #include <algorithm>

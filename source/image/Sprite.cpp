@@ -16,10 +16,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Sprite.h"
 
 #include "ImageBuffer.h"
-#include "../ui/Preferences.h"
-#include "../ui/Screen.h"
+#include "../Preferences.h"
+#include "../Screen.h"
 
-#include "../ui/opengl.h"
+#include "../opengl.h"
 
 #include <SDL2/SDL.h>
 

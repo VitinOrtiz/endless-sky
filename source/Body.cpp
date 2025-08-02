@@ -188,7 +188,10 @@ double Body::Zoom() const
 	return max(zoom, 0.f);
 }
 
-
+void Body::SetZoom(const double zoom)
+{
+	this->zoom = zoom;
+}
 
 Point Body::Scale() const
 {
@@ -480,4 +483,9 @@ void Body::SetStep(int step) const
 		// be less than 0, clamp it to 0.
 		frame = max(0.f, lastFrame * 2.f - frame);
 	}
+}
+
+void Body::SetAngle(const Angle &angle)
+{
+	this->angle = angle;
 }

@@ -18,18 +18,18 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "audio/Audio.h"
 #include "DataNode.h"
 #include "DataWriter.h"
-#include "ui/Dialog.h"
-#include "ui/text/Format.h"
+#include "Dialog.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "GameEvent.h"
 #include "Messages.h"
-#include "ship/Outfit.h"
+#include "Outfit.h"
 #include "Planet.h"
 #include "PlayerInfo.h"
 #include "Random.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "System.h"
-#include "ui/UI.h"
+#include "UI.h"
 
 #include <cstdlib>
 

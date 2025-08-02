@@ -15,14 +15,14 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Politics.h"
 
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Planet.h"
 #include "PlayerInfo.h"
 #include "Random.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 
 #include <algorithm>
 #include <cmath>

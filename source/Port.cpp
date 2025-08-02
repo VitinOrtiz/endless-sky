@@ -20,14 +20,14 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Port.h"
 
 #include "DataNode.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "PlayerInfo.h"
 #include "Politics.h"
 #include "Random.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 #include "image/SpriteSet.h"
 #include "System.h"
 

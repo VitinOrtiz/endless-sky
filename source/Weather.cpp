@@ -18,7 +18,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Angle.h"
 #include "Hazard.h"
 #include "Random.h"
-#include "ui/Screen.h"
+#include "Screen.h"
 #include "Visual.h"
 
 #include <cmath>

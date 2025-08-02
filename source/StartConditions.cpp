@@ -16,11 +16,11 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "StartConditions.h"
 
 #include "DataNode.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Logger.h"
 #include "Planet.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "image/Sprite.h"
 #include "image/SpriteSet.h"
 #include "System.h"

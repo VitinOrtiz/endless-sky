@@ -15,7 +15,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Camera.h"
 
-#include "ui/Preferences.h"
+#include "Preferences.h"
 
 #include <cmath>
 

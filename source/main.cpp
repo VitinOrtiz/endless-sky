@@ -22,36 +22,35 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "DataNode.h"
 #include "Engine.h"
 #include "Files.h"
-#include "ui/text/Font.h"
+#include "text/Font.h"
 #include "FrameTimer.h"
 #include "GameData.h"
-#include "ui/panel/GameLoadingPanel.h"
-#include "ui/GameWindow.h"
+#include "GameLoadingPanel.h"
+#include "GameWindow.h"
 #include "Logger.h"
-#include "ui/panel/MainPanel.h"
-#include "ui/panel/MenuPanel.h"
-#include "ui/panel/Panel.h"
+#include "MainPanel.h"
+#include "MenuPanel.h"
+#include "Panel.h"
 #include "PlayerInfo.h"
 #include "Plugins.h"
-#include "ui/Preferences.h"
+#include "Preferences.h"
 #include "PrintData.h"
-#include "ui/Screen.h"
+#include "Screen.h"
 #include "image/SpriteSet.h"
-#include "ui/shader/SpriteShader.h"
+#include "shader/SpriteShader.h"
 #include "TaskQueue.h"
 #include "test/Test.h"
 #include "test/TestContext.h"
-#include "ui/UI.h"
+#include "UI.h"
 
 #include <chrono>
 #include <iostream>
 #include <map>
+
 #include <cassert>
 #include <future>
 #include <exception>
 #include <string>
-#include <thread>
-#include <memory>
 
 #ifdef _WIN32
 #define STRICT

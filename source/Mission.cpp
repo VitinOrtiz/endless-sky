@@ -17,9 +17,9 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "DataNode.h"
 #include "DataWriter.h"
-#include "ui/Dialog.h"
+#include "Dialog.h"
 #include "DistanceMap.h"
-#include "ui/text/Format.h"
+#include "text/Format.h"
 #include "GameData.h"
 #include "Government.h"
 #include "Logger.h"
@@ -28,10 +28,10 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "Planet.h"
 #include "PlayerInfo.h"
 #include "Random.h"
-#include "ship/Ship.h"
-#include "ship/ShipEvent.h"
+#include "Ship.h"
+#include "ShipEvent.h"
 #include "System.h"
-#include "ui/UI.h"
+#include "UI.h"
 
 #include <cmath>
 #include <limits>
@@ -978,7 +978,7 @@ bool Mission::HasSpace(const PlayerInfo &player) const
 {
 	int extraCrew = 0;
 	if(player.Flagship())
-		extraCrew = player.Flagship()->Crew() - player.Flagship()->RequiredCrew();
+		extraCrew = player.Flagship()->GetCrew().Members() - player.Flagship()->GetCrew().RequiredCrew();
 	return (cargoSize <= player.Cargo().Free() + player.Cargo().CommoditiesSize()
 		&& passengers <= player.Cargo().BunksFree() + extraCrew);
 }
@@ -1091,7 +1091,7 @@ string Mission::BlockedMessage(const PlayerInfo &player)
 	const Ship *flagship = player.Flagship();
 	// You cannot fire crew in space.
 	if(flagship && player.GetPlanet())
-		extraCrew = flagship->Crew() - flagship->RequiredCrew();
+		extraCrew = flagship->GetCrew().Members() - flagship->GetCrew().RequiredCrew();
 
 	int cargoNeeded = cargoSize;
 	int bunksNeeded = passengers;

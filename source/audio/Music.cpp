@@ -17,13 +17,12 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 
 #include "../Files.h"
 
-#include "../ui/text/Format.h"
+#include "../text/Format.h"
 
 #include <mad.h>
 
 #include <algorithm>
 #include <cstring>
-#include <filesystem>
 #include <map>
 
 using namespace std;

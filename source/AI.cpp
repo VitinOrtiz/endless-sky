@@ -18,16 +18,16 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "audio/Audio.h"
 #include "Command.h"
 #include "DistanceMap.h"
-#include "ship/FighterHitHelper.h"
+#include "FighterHitHelper.h"
 #include "Flotsam.h"
-#include "ui/text/Format.h"
-#include "ship/FormationPattern.h"
-#include "ship/FormationPositioner.h"
+#include "text/Format.h"
+#include "FormationPattern.h"
+#include "FormationPositioner.h"
 #include "GameData.h"
 #include "Gamerules.h"
 #include "Government.h"
-#include "ship/Hardpoint.h"
-#include "ship/JumpType.h"
+#include "Hardpoint.h"
+#include "JumpType.h"
 #include "image/Mask.h"
 #include "Messages.h"
 #include "Minable.h"
@@ -36,17 +36,17 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "PlayerInfo.h"
 #include "Point.h"
 #include "Port.h"
-#include "ui/Preferences.h"
+#include "Preferences.h"
 #include "Random.h"
 #include "RoutePlan.h"
-#include "ship/Ship.h"
+#include "Ship.h"
 #include "ship/ShipAICache.h"
-#include "ship/ShipEvent.h"
-#include "ship/ShipJumpNavigation.h"
+#include "ShipEvent.h"
+#include "ShipJumpNavigation.h"
 #include "StellarObject.h"
 #include "System.h"
-#include "ui/UI.h"
-#include "ship/Weapon.h"
+#include "UI.h"
+#include "Weapon.h"
 #include "Wormhole.h"
 
 #include <algorithm>
@@ -169,14 +169,6 @@ namespace {
 		return false;
 	}
 
-	void Deploy(shared_ptr<Ship> ship, const bool includingDamaged)
-	{
-		for(const Bay &bay : ship->Bays())
-			if(bay.fighter && (includingDamaged || bay.fighter->Health() > .75) &&
-					(!bay.fighter->IsYours() || bay.fighter->HasDeployOrder()))
-				bay.fighter->SetCommands(Command::DEPLOY);
-	}
-
 	// Helper function for selecting the ships for formation commands.
 	vector<Ship *> GetShipsForFormationCommand(const PlayerInfo &player)
 	{
@@ -256,14 +248,6 @@ namespace {
 		}
 	}
 
-	// Check if the ship contains a carried ship that needs to launch.
-	bool HasDeployments(const Ship &ship)
-	{
-		for (const Bay &bay : ship.Bays())
-			if(bay.fighter && bay.fighter->HasDeployOrder())
-				return true;
-		return false;
-	}
 
 	// Determine if the ship with the given travel plan should refuel in
 	// its current system, or if it should keep traveling.
@@ -385,10 +369,30 @@ namespace {
 }
 
 
+void AI::Deploy(const Ship &ship, bool includingDamaged)
+{
+	string predicate = includingDamaged ? " including damaged" : "";
+	string text = "deploy" + predicate;
+	Broker::Message *message = new Broker::Message((Publisher &) ship, text);
+	broker->Publish("bay", message);
+}
+
+
+
+bool AI::HasDeployOrders(const Ship &ship)
+{
+	string text = "has deploy orders";
+	Broker::Message *message = new Broker::Message((Publisher &)ship, text);
+	broker->Publish("bay", message);
+}
+
+
 
 AI::AI(const PlayerInfo &player, const List<Ship> &ships,
-		const List<Minable> &minables, const List<Flotsam> &flotsam)
-	: player(player), ships(ships), minables(minables), flotsam(flotsam)
+	const List<Minable> &minables, const List<Flotsam> &flotsam,
+	Broker &broker)
+	: player(player), ships(ships), minables(minables), flotsam(flotsam),
+		broker(&broker)
 {
 	// Allocate a starting amount of hardpoints for ships.
 	firingCommands.SetHardpoints(12);
@@ -637,7 +641,7 @@ void AI::UpdateEvents(const list<ShipEvent> &events)
 				// If you provoke the same ship twice, it should have an effect both times.
 				if(event.Type() & ShipEvent::PROVOKE)
 					newActions |= ShipEvent::PROVOKE;
-				event.TargetGovernment()->Offend(newActions, target->CrewValue());
+				event.TargetGovernment()->Offend(newActions, target->GetCrew().ReputationalValue());
 			}
 		}
 	}
@@ -749,7 +753,7 @@ void AI::Step(Command &activeCommands)
 		double healthRemaining = it->Health();
 		bool isPresent = (it->GetSystem() == playerSystem);
 		bool isStranded = IsStranded(*it);
-		bool thisIsLaunching = (isPresent && HasDeployments(*it));
+		bool thisIsLaunching = (isPresent && HasDeployOrders(*it));
 		if(isStranded || it->IsDisabled())
 		{
 			// Attempt to find a friendly ship to render assistance.
@@ -762,7 +766,7 @@ void AI::Step(Command &activeCommands)
 				if(!it->IsYours() || thisIsLaunching)
 				{
 					it->SetCommands(Command::DEPLOY);
-					Deploy(it, !(it->IsYours() && fightersRetreat));
+					Deploy(*it, !(it->IsYours() && fightersRetreat));
 				}
 				// Avoid jettisoning cargo as soon as this ship is repaired.
 				if(personality.IsAppeasing())
@@ -787,7 +791,7 @@ void AI::Step(Command &activeCommands)
 				// If this is a carrier, launch whichever of its fighters are at
 				// good enough health to survive a fight.
 				command |= Command::DEPLOY;
-				Deploy(it, !fightersRetreat);
+				Deploy(*it, !fightersRetreat);
 			}
 			if(isCloaking)
 				command |= Command::CLOAK;
@@ -1021,7 +1025,7 @@ void AI::Step(Command &activeCommands)
 				if(it->HasBays())
 				{
 					command |= Command::DEPLOY;
-					Deploy(it, false);
+					Deploy(*it, false);
 				}
 				DoMining(*it, command);
 				it->SetCommands(command);
@@ -2761,8 +2765,7 @@ void AI::Attack(const Ship &ship, Command &command, const Ship &target)
 	if(!ship.IsYours() && ship.HasBays())
 	{
 		command |= Command::DEPLOY;
-		Ship &s = const_cast<Ship&>(ship);
-		Deploy(make_shared<Ship>(s), false);
+		Deploy(ship, false);
 	}
 	// Ramming AI doesn't take weapon range or self-damage into account, instead opting to bum-rush the target.
 	if(ship.GetPersonality().IsRamming())
@@ -3049,7 +3052,7 @@ void AI::DoSurveillance(Ship &ship, Command &command, shared_ptr<Ship> &target) 
 		if(ship.HasBays())
 		{
 			command |= Command::DEPLOY;
-			Deploy(make_shared<Ship>(ship), false);
+			Deploy(ship, false);
 		}
 	}
 	else if(ship.GetTargetStellar())
@@ -3221,7 +3224,10 @@ bool AI::DoHarvesting(Ship &ship, Command &command) const
 	shared_ptr<Flotsam> target = ship.GetTargetFlotsam();
 	// Don't try to chase flotsam that are already being pulled toward the ship by a tractor beam.
 	const set<const Flotsam *> &avoid = ship.GetTractorFlotsam();
-	if(target && (!ship.CanPickUp(*target) || avoid.contains(target.get())))
+	const Flotsam * f = target.get();
+	bool b1 = avoid.contains(f);
+	bool b2 = (!ship.CanPickUp(*target) || b1);
+	if(target && b2)
 	{
 		target.reset();
 		ship.SetTargetFlotsam(target);
@@ -3271,7 +3277,7 @@ bool AI::DoHarvesting(Ship &ship, Command &command) const
 	if(ship.HasBays())
 	{
 		command |= Command::DEPLOY;
-		Deploy(make_shared<Ship>(ship), false);
+		Deploy(ship, false);
 	}
 
 	PickUp(ship, command, *target);
@@ -3622,7 +3628,7 @@ Point AI::TargetAim(const Ship &ship, const Body &target)
 
 // Aim the given ship's turrets.
 void AI::AimTurrets(const Ship &ship, FireCommand &command, bool opportunistic,
-		const std::optional<Point> &targetOverride) const
+		const optional<Point> &targetOverride) const
 {
 	// (Position, Velocity) pairs of the targets.
 	vector<pair<Point, Point>> targets;
@@ -3846,7 +3852,7 @@ void AI::AutoFire(const Ship &ship, FireCommand &command, bool secondary, bool i
 		if(it != orders.end() && it->second.target.lock() == currentTarget)
 		{
 			disabledOverride = (it->second.type == Orders::FINISH_OFF);
-			friendlyOverride = disabledOverride || (it->second.type == Orders::ATTACK);
+			friendlyOverride = disabledOverride | (it->second.type == Orders::ATTACK);
 		}
 	}
 	bool currentIsEnemy = currentTarget
@@ -4618,7 +4624,7 @@ void AI::MovePlayer(Ship &ship, Command &activeCommands)
 
 	const shared_ptr<const Ship> target = ship.GetTargetShip();
 	auto targetOverride = Preferences::Has("Aim turrets with mouse") ^ activeCommands.Has(Command::AIM_TURRET_HOLD)
-		? std::optional(mousePosition) : nullopt;
+		? optional(mousePosition) : nullopt;
 	AimTurrets(ship, firingCommands, !Preferences::Has("Turrets focus fire"), targetOverride);
 	if(Preferences::GetAutoFire() != Preferences::AutoFire::OFF && !ship.IsBoarding()
 			&& !(autoPilot | activeCommands).Has(Command::LAND | Command::JUMP | Command::FLEET_JUMP | Command::BOARD)
@@ -4791,10 +4797,10 @@ void AI::MovePlayer(Ship &ship, Command &activeCommands)
 		}
 	}
 
-	if(ship.HasBays() && HasDeployments(ship))
+	if(ship.HasBays() && HasDeployOrders(ship))
 	{
 		command |= Command::DEPLOY;
-		Deploy(make_shared<Ship>(ship), !Preferences::Has("Damaged fighters retreat"));
+		Deploy(ship, !Preferences::Has("Damaged fighters retreat"));
 	}
 	if(isCloaking)
 		command |= Command::CLOAK;
